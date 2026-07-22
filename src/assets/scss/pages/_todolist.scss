@@ -1,0 +1,140 @@
+.page-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+	padding: 1rem 1.25rem;
+	margin-bottom: 1.875rem;
+	border-radius: $radius;
+	position:relative;
+	z-index:1;
+}
+
+.box-1 {
+		overflow: hidden;
+	.max {
+		position: relative;
+		background-size: cover;
+ 	   	background-repeat: no-repeat;
+		padding: 30px;
+		overflow: hidden;
+		.item {
+			position: absolute;
+			bottom: 25px;
+			.text{
+				color: white;
+				margin-bottom: 20px;
+			}
+			li{
+				&:nth-child(2){
+					margin-left:-5px;
+				}
+				&:nth-child(3){
+					margin-left:-5px;
+				}
+				&:nth-child(4){
+					margin-left:-5px;
+				}
+			}
+		}
+		.dropdown {
+			position: absolute;
+			right: 25px;
+		}
+	}
+	.max-2 {
+		padding: 30px;
+		.ul-li {
+			margin-bottom: 20px;
+			ul {
+				li {
+					display: flex;
+					align-items: center;
+				}
+			}
+		}
+		a {
+			font-size: 18px;
+			width: 100%;
+			margin-top: 1.625rem;
+		}
+	}
+}
+
+.box-2 {
+	padding: 30px;
+	.flow {
+		border: 1px solid #EEEEEE;
+		padding: 30px;
+		position: relative;
+		border-radius: $radius;
+		@include respond('laptop'){
+			padding: 15px;
+		}
+		.dz-info{
+			display: flex;
+			justify-content: space-between;
+		}
+		.side {
+			position: absolute;
+			height: 130px;
+			width: 5px;
+			top: 50%;
+			left: -3px;
+			border-radius: 10px;
+			transform: translateY(-50%);
+		}
+	}
+}
+
+.box-3 {
+	.accordion-body-text{
+		padding: 0;
+	}
+	.bootstrap-datetimepicker-widget .picker-switch td{
+		display: none;
+	}
+	.task {
+		
+		padding: 30px;
+		.fl-1 {
+			display: flex;
+			align-items: center;
+			.fl-2 {
+				ul {
+					display: flex;
+				}
+			}
+			.fl-2 h4 {
+				margin-bottom: 0;
+			}
+		}
+	}
+}
+.datepicker-days{
+	.table-condensed{
+		td.day{
+			margin-bottom: 0;
+			padding: 0;
+			font-size: 1rem;
+			width: 40px;
+			height: 40px;
+			line-height: 40px;
+			border-radius: 0.625rem;
+		}
+		td.today{
+			&::before{
+				    content: '';
+				display: block;
+				top: 0px;
+				right: 0px;
+				border-radius: 50%;
+				border: none;
+				background-color: #2a353a;
+				width: 12px;
+				height: 12px;
+				border: 2px solid #fff;
+				position: absolute;
+			}
+		}
+	}
+}

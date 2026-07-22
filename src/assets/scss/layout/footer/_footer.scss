@@ -1,0 +1,37 @@
+.footer {
+    padding: 0.3875rem 0;
+    font-size: 0.875rem;
+    background-color:$bg-color;
+    //border-top-left-radius: 1.875rem;
+    //border-top-right-radius: 1.875rem;
+    margin-top: 1rem;
+	margin-left:-30px;
+	margin-right:-30px;
+    .copyright {
+        padding: 0.8375rem;
+        margin: 0;
+       
+        p {
+            text-align: center;
+            margin: 0;
+			
+        }
+
+        a{
+            color: var(--primary);
+        }
+    }
+	@include respond ('phone'){
+		margin-left:0px;
+		margin-right:0px;
+	}
+	&.style-1{
+		
+		
+			margin-left:0;
+			margin-right:0;
+		
+	}
+}
+
+

@@ -1,0 +1,48 @@
+### Node
+node_modules/
+
+### Build output
+build/
+dist/
+
+### Environment files
+.env
+.env.local
+.env.*.local
+
+### Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+### OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+### IDEs and editors
+.vscode/
+.idea/
+.history/
+
+### Test output
+coverage/
+.nyc_output/
+jest-cache/
+
+### Caches
+.cache/
+.parcel-cache/
+.vite/
+
+### Yarn Plug'n'Play
+.pnp.cjs
+.pnp.js
+.pnp.*
+
+### TypeScript
+*.tsbuildinfo
+
+# End of .gitignore
