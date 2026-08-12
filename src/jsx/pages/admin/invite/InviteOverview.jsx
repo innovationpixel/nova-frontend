@@ -3,7 +3,7 @@ import ReactApexChart from "react-apexcharts";
 import Loading from "../../../components/utilComponents/Loading";
 import { getThemeRamp } from "../../../../utils";
 
-const InviteOverview = ({ stats, loading }) => {
+const InviteOverview = ({ stats, loading, className = "" }) => {
   const levelStats = useMemo(() => {
     if (!stats?.by_level) return [];
 
@@ -68,7 +68,7 @@ const InviteOverview = ({ stats, loading }) => {
 
   if (loading) {
     return (
-      <div className="card nova-panel">
+      <div className={`card nova-panel ${className}`.trim()}>
         <div className="card-body d-flex align-items-center justify-content-center py-4">
           <Loading />
         </div>
@@ -77,7 +77,7 @@ const InviteOverview = ({ stats, loading }) => {
   }
 
   return (
-    <div className="card nova-panel">
+    <div className={`card nova-panel ${className}`.trim()}>
       <div className="card-body">
         <div className="nova-section-head is-compact">
           <div>

@@ -122,27 +122,35 @@ const Invites = () => {
         </div>
       </div>
 
-      <div className="nova-stat-grid mb-3">
-        {statCards.map((card) => (
-          <InsightStatCard
-            key={card.key}
-            title={card.title}
-            value={formatStatValue(card)}
-            icon={card.icon}
-            tone={card.tone}
-            hint={card.hint}
+      {/* Same split as the KYC workspace: 2x2 counters beside the donut, so the
+          performance card no longer runs half empty across the full width. */}
+      <div className="row g-3 mb-3">
+        <div className="col-xl-6">
+          <div className="nova-insight-stat-grid">
+            {statCards.map((card) => (
+              <InsightStatCard
+                key={card.key}
+                title={card.title}
+                value={formatStatValue(card)}
+                icon={card.icon}
+                tone={card.tone}
+                hint={card.hint}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="col-xl-6">
+          <InviteOverview
+            className="nova-invite-overview h-100"
+            stats={referralStats}
+            loading={statsLoading}
           />
-        ))}
+        </div>
       </div>
 
-      {/* Full width, one per row: side by side these two never matched height,
-          which left a tall gap under the shorter panel. */}
       <div className="mb-3">
         <RewardRule />
-      </div>
-
-      <div className="mb-3">
-        <InviteOverview stats={referralStats} loading={statsLoading} />
       </div>
 
       <InviteTable

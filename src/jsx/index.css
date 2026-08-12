@@ -3013,13 +3013,27 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   gap: 0.45rem;
 }
 
-/* KYC workspace: 2x2 stat cards beside the outcome chart. */
-.nova-kyc-stat-grid {
+/* KYC and invite workspaces: 2x2 stat cards beside the outcome chart. */
+.nova-kyc-stat-grid,
+.nova-insight-stat-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-auto-rows: 1fr;
   gap: 0.85rem;
   height: 100%;
+}
+
+/* Half-width panel: the donut keeps a fixed column and the level cards stack
+   in a single list beside it, the same way the KYC legend does. */
+.nova-invite-overview .nova-invite-chart-layout {
+  grid-template-columns: minmax(0, 210px) minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: center;
+  height: 100%;
+}
+.nova-invite-overview .nova-invite-level-stack {
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
 }
 
 .nova-kyc-overview .nova-profile-chart-grid {
@@ -3094,12 +3108,14 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
 }
 
 @media (max-width: 991.98px) {
-  .nova-kyc-overview .nova-profile-chart-grid {
+  .nova-kyc-overview .nova-profile-chart-grid,
+  .nova-invite-overview .nova-invite-chart-layout {
     grid-template-columns: 1fr;
   }
 }
 @media (max-width: 575.98px) {
-  .nova-kyc-stat-grid {
+  .nova-kyc-stat-grid,
+  .nova-insight-stat-grid {
     grid-template-columns: 1fr;
   }
   .nova-detail-hero-art {
@@ -3119,6 +3135,13 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+}
+/* Inside a table header the bar always drops below the title, so claim the full
+   row. Sized to its content it stopped short of the panel edge and pushed the
+   action buttons onto a line of their own. */
+.nova-table-toolbar > .nova-filter-bar {
+  flex: 1 1 100%;
+  min-width: 0;
 }
 .nova-filter-bar .filter-box {
   display: flex;
