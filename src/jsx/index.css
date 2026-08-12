@@ -200,7 +200,7 @@ ol.go2441762052 {
 
 /* Nova login refresh */
 .nova-login {
-  background: linear-gradient(135deg, #000 0%, #2a6486 55%, #000 100%);
+  background: linear-gradient(135deg, #000 0%, var(--primary) 55%, #000 100%);
   min-height: 100vh;
   padding: 3rem 0;
 }
@@ -224,8 +224,8 @@ ol.go2441762052 {
   margin-bottom: 1.5rem;
 }
 .nova-login-btn {
-  background: #2a6486;
-  border-color: #2a6486;
+  background: var(--primary);
+  border-color: var(--primary);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
 }
 .nova-login-btn:hover {
@@ -240,14 +240,14 @@ ol.go2441762052 {
   font-weight: 500;
 }
 .nova-form-footer a {
-  color: #2a6486;
+  color: var(--primary);
   text-decoration: none;
 }
 .nova-form-footer a:hover {
   color: #000;
 }
 .nova-login-aside {
-  background: linear-gradient(140deg, #2a6486 0%, #000 70%);
+  background: linear-gradient(140deg, var(--primary) 0%, #000 70%);
   color: #fff;
 }
 .nova-aside-inner {
@@ -321,7 +321,7 @@ ol.go2441762052 {
   width: 180px;
   height: 180px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #fff 0%, #2a6486 60%, #000 100%);
+  background: radial-gradient(circle at 30% 30%, #fff 0%, var(--primary) 60%, #000 100%);
   opacity: 0.6;
   animation: novaFloat 6s ease-in-out infinite;
 }
@@ -345,7 +345,7 @@ ol.go2441762052 {
   right: 16px;
   bottom: 16px;
   border-radius: 16px;
-  border: 1px solid #2a6486;
+  border: 1px solid var(--primary);
 }
 @keyframes novaFadeUp {
   from {
@@ -576,8 +576,8 @@ rect#chart_ChartBorder {
   border-bottom: 2px solid #e4e4e4;
 }
 .picker__container__tab button.active {
-  color: #49599a;
-  border-bottom: 2px solid #49599a;
+  color: var(--primary);
+  border-bottom: 2px solid var(--primary);
 }
 .picker__container__tab button:first-child {
   border-right: none;
@@ -854,16 +854,16 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
 .calendar__day--start,
 .calendar__day--end,
 .calendar__day--selected {
-  background: #7986cb;
+  background: var(--primary);
   color: #fff;
 }
 .calendar__day--start:hover,
 .calendar__day--end:hover,
 .calendar__day--selected:hover {
-  background: #7986cb;
+  background: var(--primary-hover);
 }
 .calendar__day--range {
-  background: #dce1ff;
+  background: var(--rgba-primary-2);
 }
 .calendar__day--text {
   display: block;
@@ -929,7 +929,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
 
 /* Nova admin */
 .nova-dashboard-hero {
-  background: linear-gradient(135deg, #0f0c3d 0%, #1b0f5a 55%, #0d0b2f 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 52%, var(--primary) 100%);
   border-radius: 20px;
   padding: 2rem;
   display: flex;
@@ -1031,9 +1031,9 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   gap: 1.5rem;
 }
 .nova-card-tile {
-  --nova-card-accent: rgba(38, 150, 253, 0.16);
-  --nova-card-accent-2: rgba(38, 150, 253, 0.12);
-  --nova-card-icon: #2696fd;
+  --nova-card-accent: var(--rgba-primary-2);
+  --nova-card-accent-2: var(--rgba-primary-1);
+  --nova-card-icon: var(--primary);
   background: var(--nova-card-surface, #fff);
   position: relative;
   display: grid;
@@ -1073,17 +1073,18 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   transform: translateY(-4px);
   box-shadow: 0 24px 55px rgba(15, 23, 42, 0.12);
 }
+/* Virtual and physical stay apart by weight, not by hue. */
 .nova-card-tile.is-virtual {
-  --nova-card-surface: linear-gradient(135deg, #ffffff 0%, #eaf4ff 100%);
-  --nova-card-accent: rgba(38, 150, 253, 0.2);
-  --nova-card-accent-2: rgba(42, 101, 135, 0.2);
-  --nova-card-icon: #2696fd;
+  --nova-card-surface: linear-gradient(135deg, #ffffff 0%, #f3f9fc 100%);
+  --nova-card-accent: var(--rgba-primary-2);
+  --nova-card-accent-2: var(--rgba-primary-1);
+  --nova-card-icon: var(--primary);
 }
 .nova-card-tile.is-physical {
-  --nova-card-surface: linear-gradient(135deg, #ffffff 0%, #fff2e3 100%);
-  --nova-card-accent: rgba(255, 171, 45, 0.22);
-  --nova-card-accent-2: rgba(253, 83, 83, 0.14);
-  --nova-card-icon: #ffab2d;
+  --nova-card-surface: linear-gradient(135deg, #ffffff 0%, #eaf1f6 100%);
+  --nova-card-accent: var(--rgba-primary-3);
+  --nova-card-accent-2: var(--rgba-primary-2);
+  --nova-card-icon: var(--primary-dark);
 }
 .nova-card-tile-content {
   position: relative;
@@ -1215,7 +1216,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   color: #64748b;
 }
 .nova-invite-tabs .nav-link.active {
-  color: #2a6587;
+  color: var(--primary);
 }
 .nova-invite-summary-card {
   border: 1px solid #e3edf4;
@@ -1225,7 +1226,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   height: 100%;
 }
 .nova-invite-summary-card.is-payout {
-  border-color: rgba(42, 101, 135, 0.18);
+  border-color: var(--rgba-primary-2);
   background: linear-gradient(180deg, #f3f8fb 0%, #ffffff 100%);
 }
 .nova-invite-summary-label {
@@ -1254,13 +1255,15 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
 }
 .nova-invite-level-stack {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 0.65rem;
+  align-content: start;
 }
 .nova-invite-tier.is-physical {
-  border-left: 4px solid #ffab2d;
+  border-left: 4px solid var(--primary-dark);
 }
 .nova-invite-tier.is-virtual {
-  border-left: 4px solid #2696fd;
+  border-left: 4px solid var(--primary);
 }
 .nova-invite-tier-label {
   font-weight: 700;
@@ -1286,14 +1289,14 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   font-size: 1rem;
 }
 .nova-invite-metric.is-highlight {
-  background: rgba(42, 101, 135, 0.08);
-  border-color: rgba(42, 101, 135, 0.16);
+  background: var(--rgba-primary-1);
+  border-color: var(--rgba-primary-2);
 }
 .nova-invite-metric.is-physical {
-  border-left: 3px solid #ffab2d;
+  border-left: 3px solid var(--primary-dark);
 }
 .nova-invite-metric.is-virtual {
-  border-left: 3px solid #2696fd;
+  border-left: 3px solid var(--primary);
 }
 .nova-reward-input {
   margin-top: 0.35rem;
@@ -1309,30 +1312,30 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
 
 /* Reward rules panel */
 .nova-reward-rules {
-  --reward-accent: #2a6587;
-  --reward-accent-soft: rgba(42, 101, 135, 0.1);
-  --reward-accent-border: rgba(42, 101, 135, 0.18);
+  --reward-accent: var(--primary);
+  --reward-accent-soft: var(--rgba-primary-1);
+  --reward-accent-border: var(--rgba-primary-2);
   height: 100%;
-  border-radius: 20px;
-  border: 1px solid #e8eef6;
+  border-radius: 1rem;
+  border: 1px solid #e3edf4;
   background:
-    radial-gradient(circle at top right, rgba(42, 101, 135, 0.08), transparent 42%),
+    radial-gradient(circle at top right, var(--rgba-primary-1), transparent 42%),
     #fff;
-  box-shadow: 0 14px 34px rgba(30, 52, 95, 0.07);
-  padding: 1.35rem;
+  box-shadow: 0 12px 24px var(--rgba-primary-1);
+  padding: 1.5rem 1.75rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 .nova-reward-rules.is-physical {
-  --reward-accent: #d97706;
-  --reward-accent-soft: rgba(255, 171, 45, 0.14);
-  --reward-accent-border: rgba(255, 171, 45, 0.34);
+  --reward-accent: var(--primary-dark);
+  --reward-accent-soft: var(--rgba-primary-1);
+  --reward-accent-border: var(--rgba-primary-3);
 }
 .nova-reward-rules.is-virtual {
-  --reward-accent: #2563eb;
-  --reward-accent-soft: rgba(38, 150, 253, 0.12);
-  --reward-accent-border: rgba(38, 150, 253, 0.28);
+  --reward-accent: var(--primary);
+  --reward-accent-soft: var(--rgba-primary-1);
+  --reward-accent-border: var(--rgba-primary-3);
 }
 .nova-reward-rules-head {
   display: flex;
@@ -1361,6 +1364,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
 }
 .nova-reward-rules-head-stats {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 0.55rem;
   min-width: 170px;
 }
@@ -1393,6 +1397,8 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.65rem;
+  /* Two switches should not stretch the width of the screen. */
+  max-width: 680px;
 }
 .nova-reward-rules-tab {
   border: 1px solid #e8eef6;
@@ -1446,6 +1452,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
 }
 .nova-reward-rules-ladder {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 0.85rem;
   position: relative;
 }
@@ -1461,12 +1468,13 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   opacity: 0.72;
 }
 .nova-reward-rules-tier.is-physical {
-  border-top: 3px solid #ffab2d;
+  border-top: 3px solid var(--primary-dark);
 }
 .nova-reward-rules-tier.is-virtual {
-  border-top: 3px solid #2696fd;
+  border-top: 3px solid var(--primary);
 }
 .nova-reward-rules-connector {
+  display: none;
   position: absolute;
   left: 1.55rem;
   bottom: -0.85rem;
@@ -1645,7 +1653,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
 }
 .nova-invite-earnings {
   font-weight: 700;
-  color: #2a6587;
+  color: var(--primary);
 }
 
 .nova-invite-hero {
@@ -1655,7 +1663,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   gap: 1.5rem;
   padding: 1.75rem;
   border-radius: 20px;
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 52%, #2a6587 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 52%, var(--primary) 100%);
   color: #fff;
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
 }
@@ -1719,7 +1727,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   box-shadow: 0 12px 28px rgba(30, 52, 95, 0.06);
 }
 .nova-invite-stat-card.is-primary {
-  border-top: 3px solid #2696fd;
+  border-top: 3px solid var(--primary);
 }
 .nova-invite-stat-card.is-success {
   border-top: 3px solid #10b981;
@@ -1728,7 +1736,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   border-top: 3px solid #f59e0b;
 }
 .nova-invite-stat-card.is-info {
-  border-top: 3px solid #2a6587;
+  border-top: 3px solid var(--primary);
 }
 .nova-invite-stat-icon {
   width: 52px;
@@ -1783,10 +1791,10 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
 }
 .nova-invite-segment-btn.is-active.is-physical {
-  color: #b45309;
+  color: var(--primary-dark);
 }
 .nova-invite-segment-btn.is-active.is-virtual {
-  color: #1d4ed8;
+  color: var(--primary);
 }
 
 .nova-invite-insights-row {
@@ -1808,8 +1816,8 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  color: #2a6587;
-  background: rgba(42, 101, 135, 0.1);
+  color: var(--primary);
+  background: var(--rgba-primary-1);
 }
 
 .nova-invite-chart-layout {
@@ -1829,8 +1837,8 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   min-width: 42px;
   padding: 0.2rem 0.55rem;
   border-radius: 999px;
-  background: rgba(42, 101, 135, 0.1);
-  color: #2a6587;
+  background: var(--rgba-primary-1);
+  color: var(--primary);
   font-weight: 700;
   font-size: 0.82rem;
 }
@@ -1843,7 +1851,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
 .nova-invite-progress-bar {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #2a6587 0%, #2696fd 100%);
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary) 100%);
 }
 
 .nova-invite-table-panel .nova-table-toolbar {
@@ -1869,7 +1877,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #2a6587 0%, #2696fd 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
   color: #fff;
   font-size: 0.82rem;
   font-weight: 700;
@@ -1893,7 +1901,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   font-size: 0.84rem;
 }
 .nova-invite-metric-chip .pi {
-  color: #2a6587;
+  color: var(--primary);
   font-size: 0.8rem;
 }
 .nova-invite-copy-btn,
@@ -1915,7 +1923,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
 .nova-invite-copy-btn:hover,
 .nova-invite-action-btn:hover {
   background: #f8fafc;
-  color: #2a6587;
+  color: var(--primary);
 }
 .nova-invite-actions {
   display: flex;
@@ -1986,11 +1994,11 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   font-size: 1.1rem;
 }
 .nova-invite-detail-stat.is-earnings {
-  background: rgba(42, 101, 135, 0.06);
-  border-color: rgba(42, 101, 135, 0.16);
+  background: var(--rgba-primary-1);
+  border-color: var(--rgba-primary-2);
 }
 .nova-invite-detail-stat.is-earnings strong {
-  color: #2a6587;
+  color: var(--primary);
 }
 
 .nova-invite-rewards-table-wrap {
@@ -2037,6 +2045,8 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   }
 }
 
+/* One hero treatment for every admin page: the accent always comes from the
+   active theme colour, so no page invents its own palette. */
 .nova-page-hero,
 .nova-invite-hero {
   display: flex;
@@ -2046,23 +2056,8 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   padding: 1.75rem;
   border-radius: 20px;
   color: #fff;
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 52%, var(--primary) 100%);
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
-}
-.nova-page-hero.is-invites,
-.nova-invite-hero {
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 52%, #2a6587 100%);
-}
-.nova-page-hero.is-cards {
-  background: linear-gradient(135deg, #102a43 0%, #1d4f7a 55%, #2696fd 100%);
-}
-.nova-page-hero.is-orders {
-  background: linear-gradient(135deg, #1f2937 0%, #374151 50%, #ffab2d 100%);
-}
-.nova-page-hero.is-kyc {
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 48%, #10b981 100%);
-}
-.nova-page-hero.is-dashboard {
-  background: linear-gradient(135deg, #0f0c3d 0%, #1b0f5a 52%, #2696fd 100%);
 }
 .nova-dashboard-hero-side {
   display: flex;
@@ -2171,7 +2166,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
 }
 .nova-insight-stat-card.is-primary,
 .nova-invite-stat-card.is-primary {
-  border-top: 3px solid #2696fd;
+  border-top: 3px solid var(--primary);
 }
 .nova-insight-stat-card.is-success,
 .nova-invite-stat-card.is-success {
@@ -2183,7 +2178,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
 }
 .nova-insight-stat-card.is-info,
 .nova-invite-stat-card.is-info {
-  border-top: 3px solid #2a6587;
+  border-top: 3px solid var(--primary);
 }
 .nova-insight-stat-card.is-secondary,
 .nova-invite-stat-card.is-secondary {
@@ -2236,9 +2231,10 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
 }
 
 .nova-table-panel .nova-table-toolbar {
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #edf2f7;
-  margin-bottom: 0.5rem;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  margin-bottom: 0.25rem;
 }
 .nova-cards-table .p-datatable-tbody > tr {
   transition: background-color 0.2s ease;
@@ -2258,7 +2254,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #2a6587 0%, #2696fd 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%);
   color: #fff;
   font-size: 0.82rem;
   font-weight: 700;
@@ -2282,7 +2278,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
 }
 .nova-table-action-btn:hover {
   background: #f8fafc;
-  color: #2a6587;
+  color: var(--primary);
 }
 .nova-delivery-select {
   min-width: 140px;
@@ -2336,16 +2332,16 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   font-weight: 700;
 }
 .nova-card-type-badge.is-virtual {
-  background: rgba(38, 150, 253, 0.12);
-  color: #1d4ed8;
+  background: var(--rgba-primary-1);
+  color: var(--primary);
 }
 .nova-card-type-badge.is-physical {
-  background: rgba(255, 171, 45, 0.18);
-  color: #b45309;
+  background: var(--rgba-primary-2);
+  color: var(--primary-dark);
 }
 .nova-card-balance {
   font-weight: 700;
-  color: #2a6587;
+  color: var(--primary);
 }
 .nova-card-bound-chip {
   display: inline-flex;
@@ -2383,11 +2379,11 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   font-size: 1.05rem;
 }
 .nova-card-detail-stat.is-highlight {
-  background: rgba(42, 101, 135, 0.06);
-  border-color: rgba(42, 101, 135, 0.16);
+  background: var(--rgba-primary-1);
+  border-color: var(--rgba-primary-2);
 }
 .nova-card-detail-stat.is-highlight strong {
-  color: #2a6587;
+  color: var(--primary);
 }
 
 @media (max-width: 1199.98px) {
@@ -2411,8 +2407,8 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   --referral-ink: #1c1917;
   --referral-muted: #78716c;
   --referral-paper: #faf8f5;
-  --referral-accent: #c45c26;
-  --referral-accent-soft: rgba(196, 92, 38, 0.12);
+  --referral-accent: var(--primary);
+  --referral-accent-soft: var(--rgba-primary-1);
   --referral-line: #e7e5e4;
   display: grid;
   gap: 1.25rem;
@@ -2648,7 +2644,7 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #c45c26 0%, #2a6587 100%);
+  background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary) 100%);
 }
 .nova-referral-performance-row-foot {
   display: flex;
@@ -2711,4 +2707,567 @@ button.react-calendar__tile.react-calendar__tile--active.react-calendar__tile--r
   .nova-referral-funnel-arrow {
     display: none;
   }
+}
+
+/* ==========================================================================
+   Cards workspace: stat grid, inventory form, platform fees, filter bar
+   ========================================================================== */
+.nova-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.85rem;
+}
+
+.nova-form-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #475569;
+}
+
+.nova-inventory-panel .form-control,
+.nova-inventory-panel .form-select,
+.nova-fees-panel .form-control,
+.nova-fees-panel .form-select {
+  height: 44px;
+  border-radius: 10px;
+  border-color: #dbe4ee;
+  font-size: 0.9rem;
+}
+.nova-inventory-panel .form-control:focus,
+.nova-inventory-panel .form-select:focus,
+.nova-fees-panel .form-control:focus,
+.nova-fees-panel .form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--rgba-primary-1);
+}
+.nova-inventory-panel .p-inputnumber {
+  width: 100%;
+}
+.nova-inventory-panel .is-invalid,
+.nova-inventory-panel .p-invalid .form-control {
+  border-color: #ef4444;
+}
+
+.nova-inventory-tabs {
+  margin-bottom: 1.15rem;
+  border-bottom: 1px solid #edf2f7;
+}
+.nova-inventory-tabs .nav-tabs {
+  gap: 0.35rem;
+  border-bottom: 0;
+  margin-bottom: 0;
+}
+.nova-inventory-tabs .nav-link {
+  padding: 0.6rem 1.05rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 10px 10px 0 0;
+  background: transparent;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+.nova-inventory-tabs .nav-link:hover {
+  color: var(--primary);
+  background: var(--rgba-primary-1);
+}
+.nova-inventory-tabs .nav-link.active {
+  color: var(--primary);
+  background: var(--rgba-primary-1);
+  border-bottom-color: var(--primary);
+}
+
+.nova-image-field {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px dashed #d7e2ee;
+  border-radius: 12px;
+  background: #f8fbfd;
+}
+.nova-image-field-preview {
+  flex: 0 0 auto;
+  width: 66px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  border: 1px solid #e2ecf5;
+  background: #eef4fa;
+  color: #94a3b8;
+  overflow: hidden;
+}
+.nova-image-field-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.nova-image-field-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.nova-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1.35rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eef2f7;
+}
+.nova-form-actions-status {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.nova-form-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 170px;
+}
+
+.nova-fee-tile {
+  height: 100%;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid #e8eef6;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(30, 52, 95, 0.05);
+}
+.nova-fee-tile-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.85rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+.nova-fee-tile-head .pi {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: var(--rgba-primary-1);
+  color: var(--primary);
+  font-size: 0.78rem;
+}
+
+.nova-detail-group + .nova-detail-group {
+  margin-top: 1.15rem;
+}
+.nova-detail-group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+.nova-detail-group-title::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: #eef2f7;
+}
+.nova-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.6rem;
+}
+.nova-detail-grid .nova-profile-list-row {
+  gap: 0.75rem;
+}
+.nova-detail-grid .nova-profile-list-row span {
+  flex: 0 0 auto;
+}
+.nova-detail-grid .nova-profile-list-row strong {
+  text-align: right;
+  word-break: break-word;
+}
+
+/* Card artwork in the detail hero. */
+.nova-detail-hero-art {
+  flex: 0 0 auto;
+  width: 132px;
+  height: 84px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  border-radius: 14px;
+  border: 1px solid #e2ecf5;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1);
+  overflow: hidden;
+}
+.nova-detail-hero-art img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Identity documents: thumbnails that open the full scan. */
+.nova-doc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+.nova-doc-card {
+  display: block;
+  border: 1px solid #e3edf4;
+  border-radius: 12px;
+  background: #f9fbfd;
+  overflow: hidden;
+  text-decoration: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.nova-doc-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 12px 26px rgba(30, 52, 95, 0.12);
+}
+.nova-doc-card-media {
+  display: block;
+  height: 170px;
+  background: #eef4fa;
+}
+.nova-doc-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.nova-doc-card-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #1d2b36;
+}
+.nova-doc-card-label .pi {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.nova-doc-thumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.nova-doc-thumb {
+  width: 46px;
+  height: 32px;
+  border-radius: 7px;
+  border: 1px solid #e3edf4;
+  background: #eef4fa;
+  overflow: hidden;
+  display: inline-flex;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.nova-doc-thumb:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+}
+.nova-doc-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nova-kyc-timeline {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
+}
+.nova-kyc-timeline strong {
+  font-size: 0.85rem;
+  color: #1d2b36;
+}
+
+/* Side-by-side panels that should end on the same line. */
+.nova-equal-cards > [class*="col-"] {
+  display: flex;
+}
+.nova-equal-cards > [class*="col-"] > * {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.nova-invite-level-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+/* KYC workspace: 2x2 stat cards beside the outcome chart. */
+.nova-kyc-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 0.85rem;
+  height: 100%;
+}
+
+.nova-kyc-overview .nova-profile-chart-grid {
+  grid-template-columns: minmax(0, 230px) minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: center;
+  height: 100%;
+}
+.nova-kyc-overview .nova-profile-chart {
+  min-width: 0;
+}
+.nova-kyc-legend {
+  display: grid;
+  align-content: center;
+  gap: 0.9rem;
+}
+.nova-kyc-legend-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+  color: #475569;
+}
+.nova-kyc-legend-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+.nova-kyc-legend-head strong {
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+.nova-kyc-legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.nova-kyc-legend-bar {
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: #eef2f7;
+  overflow: hidden;
+}
+.nova-kyc-legend-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  transition: width 0.4s ease;
+}
+.nova-kyc-overview-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: #64748b;
+}
+.nova-kyc-overview-empty .pi {
+  font-size: 1.7rem;
+  color: #cbd5e1;
+}
+.nova-kyc-overview-empty h6 {
+  margin: 0;
+  color: #334155;
+}
+
+@media (max-width: 991.98px) {
+  .nova-kyc-overview .nova-profile-chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 575.98px) {
+  .nova-kyc-stat-grid {
+    grid-template-columns: 1fr;
+  }
+  .nova-detail-hero-art {
+    width: 108px;
+    height: 68px;
+  }
+}
+
+/* Sits directly on the panel: no nested rounded box around the controls. */
+.nova-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.85rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.nova-filter-bar .filter-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1 1 200px;
+  min-width: 170px;
+  max-width: 320px;
+}
+.nova-filter-bar .filter-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #475569;
+}
+.nova-filter-bar .p-inputtext,
+.nova-filter-bar .p-dropdown {
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #dbe4ee;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 0.9rem;
+}
+.nova-filter-bar .p-dropdown .p-dropdown-label {
+  display: flex;
+  align-items: center;
+  padding: 0 0.15rem 0 0.6rem;
+}
+/* The PrimeReact theme boxes the chevron in its own bordered cell and paints a
+   second focus ring on it. Both are flattened here, in every state. */
+.nova-filter-bar .p-dropdown .p-dropdown-trigger,
+.nova-filter-bar .p-dropdown.p-focus .p-dropdown-trigger,
+.nova-filter-bar .p-dropdown.p-inputwrapper-focus .p-dropdown-trigger {
+  width: 2.25rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #94a3b8;
+}
+.nova-filter-bar .p-dropdown:not(.p-disabled).p-focus,
+.nova-filter-bar .p-dropdown:not(.p-disabled):hover,
+.nova-filter-bar .p-inputtext:enabled:focus,
+.nova-filter-bar .p-inputtext:enabled:hover {
+  border-color: var(--primary);
+  outline: 0;
+}
+.nova-filter-bar .p-dropdown:not(.p-disabled).p-focus,
+.nova-filter-bar .p-inputtext:enabled:focus {
+  box-shadow: 0 0 0 3px var(--rgba-primary-1);
+}
+.nova-filter-bar .p-dropdown-clear-icon {
+  right: 2.4rem;
+  color: #94a3b8;
+}
+.nova-filter-bar .p-input-icon-left {
+  position: relative;
+  display: block;
+}
+.nova-filter-bar .p-input-icon-left > i {
+  left: 0.9rem;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+.nova-filter-bar .search-input {
+  padding-left: 2.5rem;
+}
+.nova-filter-bar .action-buttons {
+  display: flex;
+  gap: 0.6rem;
+  margin-left: auto;
+}
+.nova-filter-bar .action-buttons .p-button {
+  height: 44px;
+  padding: 0 1.1rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+.nova-filter-bar .clear-btn {
+  border: 1px solid #dbe4ee;
+  background: #fff;
+  color: #64748b;
+}
+.nova-filter-bar .clear-btn:hover {
+  border-color: #cbd5e1;
+  background: #f1f5f9;
+  color: #475569;
+}
+.nova-filter-bar .clear-btn .p-button-icon,
+.nova-filter-bar .clear-btn .p-button-label {
+  color: inherit;
+}
+.nova-filter-bar .export-btn {
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+.nova-filter-bar .export-btn:hover {
+  border-color: #1f4c66;
+  background: #1f4c66;
+}
+.nova-filter-bar .export-btn .p-button-icon,
+.nova-filter-bar .export-btn .p-button-label {
+  color: #fff;
+}
+
+@media (max-width: 767.98px) {
+  .nova-filter-bar .filter-box {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+  .nova-filter-bar .action-buttons {
+    width: 100%;
+    margin-left: 0;
+  }
+  .nova-filter-bar .action-buttons .p-button {
+    flex: 1 1 auto;
+  }
+  .nova-form-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .nova-form-actions .btn {
+    width: 100%;
+  }
+}
+
+/* Profile ------------------------------------------------------------------ */
+
+/* The identity card now sits in a half-width column, so its header has to wrap
+   instead of squashing the name against the status pill. */
+.nova-profile-card .nova-profile-hero {
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.nova-profile-card .nova-profile-contact-grid {
+  grid-template-columns: 1fr;
+  margin-top: 1.25rem;
+}
+.nova-profile-footnote {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e8eef6;
+  color: #64748b;
+  font-size: 0.82rem;
+}
+.nova-profile-footnote i {
+  color: var(--primary);
 }

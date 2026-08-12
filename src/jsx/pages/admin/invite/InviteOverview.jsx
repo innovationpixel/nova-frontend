@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import ReactApexChart from "react-apexcharts";
 import Loading from "../../../components/utilComponents/Loading";
+import { getThemeRamp } from "../../../../utils";
 
 const InviteOverview = ({ stats, loading }) => {
   const levelStats = useMemo(() => {
@@ -18,6 +19,12 @@ const InviteOverview = ({ stats, loading }) => {
   const totalInvites = Number(stats?.total_referral_invites ?? 0);
   const totalPayout = Number(stats?.total_rewarded_usd ?? 0);
 
+  // Shared by the ring and the level cards so a slice is always identifiable.
+  const levelColors = useMemo(
+    () => getThemeRamp(levelStats.length || 4),
+    [levelStats.length],
+  );
+
   const chartOptions = useMemo(
     () => ({
       chart: {
@@ -25,14 +32,11 @@ const InviteOverview = ({ stats, loading }) => {
         height: 220,
       },
       labels: levelStats.map((item) => `Level ${item.level}`),
-      colors: ["#2a6587", "#2696fd", "#ffab2d", "#10b981"],
+      colors: levelColors,
       dataLabels: { enabled: false },
       stroke: { width: 0 },
-      legend: {
-        show: true,
-        position: "bottom",
-        fontSize: "12px",
-      },
+      // The level cards beside the ring already label every slice.
+      legend: { show: false },
       plotOptions: {
         pie: {
           donut: {
@@ -54,7 +58,7 @@ const InviteOverview = ({ stats, loading }) => {
         },
       },
     }),
-    [levelStats, totalInvites],
+    [levelColors, levelStats, totalInvites],
   );
 
   const chartSeries = useMemo(
@@ -106,19 +110,26 @@ const InviteOverview = ({ stats, loading }) => {
 
           <div className="nova-invite-level-stack">
             {levelStats.length ? (
-              levelStats.map((item) => {
+              levelStats.map((item, index) => {
                 const inviteShare = totalInvites
                   ? Math.round((item.invites / totalInvites) * 100)
                   : 0;
                 const payoutShare = totalPayout
                   ? Math.round((item.payout / totalPayout) * 100)
                   : 0;
+                const levelColor = levelColors[index % levelColors.length];
 
                 return (
                   <div className="nova-invite-level-card" key={item.level}>
                     <div className="d-flex align-items-center justify-content-between gap-2 mb-2">
                       <div>
-                        <strong>Level {item.level}</strong>
+                        <strong className="nova-invite-level-name">
+                          <i
+                            className="nova-kyc-legend-dot"
+                            style={{ background: levelColor }}
+                          />
+                          Level {item.level}
+                        </strong>
                         <div className="text-muted small">
                           {inviteShare}% of invite volume
                         </div>
@@ -131,7 +142,10 @@ const InviteOverview = ({ stats, loading }) => {
                     <div className="nova-invite-progress mb-2">
                       <div
                         className="nova-invite-progress-bar"
-                        style={{ width: `${inviteShare}%` }}
+                        style={{
+                          width: `${inviteShare}%`,
+                          background: levelColor,
+                        }}
                       />
                     </div>
 

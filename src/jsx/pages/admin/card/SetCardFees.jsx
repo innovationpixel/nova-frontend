@@ -1,9 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { request } from "../../../../utils/api";
 import { Nav, Tab } from "react-bootstrap";
 import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
-import { normalizeCardType } from "../../../../utils";
+import { normalizeCardType, resolveImageSrc } from "../../../../utils";
 import { Form, Formik, setIn } from "formik";
 import { cardFeeSchema } from "../../../../utils/validate/validate";
 import Loading from "../../../components/utilComponents/Loading";
@@ -16,6 +16,18 @@ const AVAILABILITY_OPTIONS = [
   { label: "Paused", value: "paused" },
 ];
 
+// Field name the backend reads the upload from (`$request->file(...)`).
+// Change this one place if the API expects a different key.
+const IMAGE_UPLOAD_FIELD = "image";
+
+const extractApiError = (error) => {
+  const data = error?.response?.data;
+  const firstFieldError = data?.errors
+    ? Object.values(data.errors).flat()[0]
+    : null;
+  return firstFieldError || data?.message || "Failed to save card inventory.";
+};
+
 const getAvailabilityValue = (product) => {
   if (product?.is_active === false) return "paused";
   if (product?.is_active === true) return "available";
@@ -25,7 +37,246 @@ const getAvailabilityValue = (product) => {
   return "available";
 };
 
-const SetCardFees = ({ cardProducts }) => {
+const FormField = ({
+  label,
+  required,
+  error,
+  touched,
+  className = "col-lg-3 col-md-6",
+  children,
+}) => (
+  <div className={className}>
+    <label className="form-label nova-form-label">
+      {label}
+      {required ? <span className="text-danger ms-1">*</span> : null}
+    </label>
+    {children}
+    <FieldError show={Boolean(touched && error)}>{error}</FieldError>
+  </div>
+);
+
+const ImageField = ({ className, file, imageUrl, onSelect, onBlur, error, touched }) => {
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+  useEffect(() => {
+    if (!(file instanceof File)) {
+      setPreviewUrl(null);
+      return undefined;
+    }
+
+    const nextUrl = URL.createObjectURL(file);
+    setPreviewUrl(nextUrl);
+    return () => URL.revokeObjectURL(nextUrl);
+  }, [file]);
+
+  const previewSrc = previewUrl || resolveImageSrc(imageUrl);
+
+  return (
+    <FormField
+      label="Card Image"
+      error={error}
+      touched={touched}
+      className={className}
+    >
+      <div className="nova-image-field">
+        <div className="nova-image-field-preview">
+          {previewSrc ? (
+            <img src={previewSrc} alt="Card artwork preview" />
+          ) : (
+            <i className="pi pi-image" />
+          )}
+        </div>
+        <div className="nova-image-field-body">
+          <input
+            type="file"
+            accept="image/*"
+            className="form-control"
+            onChange={onSelect}
+            onBlur={onBlur}
+          />
+          <small className="text-muted d-block mt-1">
+            {file
+              ? `Selected: ${file.name}`
+              : imageUrl
+                ? "Current image is already saved."
+                : "PNG or JPG, shown on the card offering tile."}
+          </small>
+        </div>
+      </div>
+    </FormField>
+  );
+};
+
+const CardTabFields = ({
+  variant,
+  values,
+  errors,
+  touched,
+  setFieldValue,
+  setFieldTouched,
+}) => {
+  const detailsKey = `${variant}Details`;
+  const feeKey = `${variant}Fee`;
+  const discountKey = `${variant}Discount`;
+  const details = values[detailsKey];
+  const detailErrors = errors[detailsKey] || {};
+  const detailTouched = touched[detailsKey] || {};
+  const isPhysical = variant === "physical";
+
+  const detailProps = (name, extraClass = "form-control") => ({
+    onBlur: () => setFieldTouched(`${detailsKey}.${name}`, true),
+    className: `w-100 ${extraClass} ${
+      detailTouched[name] && detailErrors[name] ? "is-invalid" : ""
+    }`,
+  });
+
+  return (
+    <div className="row g-3">
+      <FormField
+        label="Name"
+        required
+        error={detailErrors.name}
+        touched={detailTouched.name}
+        className="col-lg-4 col-md-6"
+      >
+        <InputText
+          value={details.name}
+          onChange={(e) => setFieldValue(`${detailsKey}.name`, e.target.value)}
+          {...detailProps("name")}
+        />
+      </FormField>
+
+      <FormField
+        label="Currency"
+        required
+        error={detailErrors.currency}
+        touched={detailTouched.currency}
+        className="col-lg-2 col-md-6"
+      >
+        <InputText
+          value={details.currency}
+          onChange={(e) =>
+            setFieldValue(`${detailsKey}.currency`, e.target.value)
+          }
+          {...detailProps("currency")}
+        />
+      </FormField>
+
+      <FormField
+        label="Description"
+        required
+        error={detailErrors.description}
+        touched={detailTouched.description}
+        className="col-lg-6"
+      >
+        <InputText
+          value={details.description}
+          onChange={(e) =>
+            setFieldValue(`${detailsKey}.description`, e.target.value)
+          }
+          {...detailProps("description")}
+        />
+      </FormField>
+
+      {isPhysical && (
+        <FormField
+          label="Delivery"
+          required
+          error={detailErrors.delivery}
+          touched={detailTouched.delivery}
+        >
+          <InputText
+            value={details.delivery}
+            onChange={(e) =>
+              setFieldValue(`${detailsKey}.delivery`, e.target.value)
+            }
+            {...detailProps("delivery")}
+          />
+        </FormField>
+      )}
+
+      {isPhysical && (
+        <FormField
+          label="Availability"
+          required
+          error={detailErrors.availability}
+          touched={detailTouched.availability}
+        >
+          <select
+            value={details.availability}
+            onChange={(e) =>
+              setFieldValue(`${detailsKey}.availability`, e.target.value)
+            }
+            {...detailProps("availability", "form-select")}
+          >
+            {AVAILABILITY_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </FormField>
+      )}
+
+      <FormField
+        label={`Card Price (${details.currency || "USD"})`}
+        required
+        error={errors[feeKey]}
+        touched={touched[feeKey]}
+      >
+        <InputNumber
+          value={values[feeKey]}
+          onValueChange={(e) => setFieldValue(feeKey, e.value ?? 0)}
+          onBlur={() => setFieldTouched(feeKey, true)}
+          mode="decimal"
+          minFractionDigits={0}
+          maxFractionDigits={2}
+          className={`w-100 ${
+            touched[feeKey] && errors[feeKey] ? "p-invalid" : ""
+          }`}
+          inputClassName="form-control"
+        />
+      </FormField>
+
+      <FormField
+        label={`Discounted Price (${details.currency || "USD"})`}
+        required
+        error={errors[discountKey]}
+        touched={touched[discountKey]}
+      >
+        <InputNumber
+          value={values[discountKey]}
+          onValueChange={(e) => setFieldValue(discountKey, e.value ?? 0)}
+          onBlur={() => setFieldTouched(discountKey, true)}
+          mode="decimal"
+          minFractionDigits={0}
+          maxFractionDigits={2}
+          className={`w-100 ${
+            touched[discountKey] && errors[discountKey] ? "p-invalid" : ""
+          }`}
+          inputClassName="form-control"
+        />
+      </FormField>
+
+      <ImageField
+        className={isPhysical ? "col-12" : "col-lg-6"}
+        file={details.image_file}
+        imageUrl={details.image_url}
+        error={detailErrors.image_file}
+        touched={detailTouched.image_file}
+        onSelect={(e) =>
+          setFieldValue(
+            `${detailsKey}.image_file`,
+            e.currentTarget.files?.[0] ?? null,
+          )
+        }
+        onBlur={() => setFieldTouched(`${detailsKey}.image_file`, true)}
+      />
+    </div>
+  );
+};
+
+const SetCardFees = ({ cardProducts, onSaved }) => {
   const [feeSaved, setFeeSaved] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [activeTab, setActiveTab] = useState("virtual");
@@ -48,26 +299,36 @@ const SetCardFees = ({ cardProducts }) => {
 
   const buildProductFormData = (product, overrides = {}) => {
     const formData = new FormData();
+    // The endpoint is PUT /card-products/{id}, but PHP does not parse multipart
+    // bodies on a real PUT, so the file upload goes as POST + method spoofing.
+    formData.append("_method", "PUT");
     formData.append("card_code", product.card_code);
     formData.append("name", overrides.name ?? product.name);
     formData.append(
       "description",
-      overrides.description ?? product.description ?? "....",
+      overrides.description ?? product.description ?? "",
     );
     formData.append(
       "currency",
       overrides.currency ?? product.currency ?? "USD",
     );
     if (overrides.image_file instanceof File) {
-      formData.append("image", overrides.image_file);
+      formData.append(IMAGE_UPLOAD_FIELD, overrides.image_file);
     } else {
-      const imageUrl =
-        overrides.image_url ?? product.image_url ?? product.image ?? null;
-      formData.append("image_url", imageUrl ?? "");
+      // No new file picked: send the stored value back, or omit the field
+      // entirely. Sending "" here made the backend wipe the saved image.
+      const imageUrl = overrides.image_url || product.image_url || product.image;
+      if (imageUrl) {
+        formData.append("image_url", imageUrl);
+      }
     }
     formData.append("card_type", product.card_type);
     formData.append("price", overrides.price ?? product.price);
     formData.append("discount", overrides.discount ?? product.discount);
+
+    if (product.stock !== undefined && product.stock !== null) {
+      formData.append("stock", product.stock);
+    }
 
     if (overrides.delivery !== undefined) {
       formData.append("delivery", overrides.delivery);
@@ -142,72 +403,66 @@ const SetCardFees = ({ cardProducts }) => {
   };
 
   return (
-    <div className="card nova-panel">
-        <div className="card-body">
-          <div className="nova-section-head is-compact">
-            <div>
-              <h4 className="mb-1">Set Card Inventory</h4>
-              <p className="text-muted mb-0">
-                Update pricing, delivery, and availability for card products.
-              </p>
-            </div>
+    <div className="card nova-panel nova-inventory-panel">
+      <div className="card-body">
+        <div className="nova-section-head is-compact">
+          <div>
+            <h4 className="mb-1">Set Card Inventory</h4>
+            <p className="text-muted mb-0">
+              Update pricing, delivery, and availability for card products.
+            </p>
           </div>
+        </div>
 
-          <Formik
-            enableReinitialize
-            initialValues={initialValues}
-            validate={validateActiveTab}
-            onSubmit={async (values, { setSubmitting }) => {
-              try {
-                setSaveError("");
-                console.log("dsds");
-                
+        <Formik
+          enableReinitialize
+          initialValues={initialValues}
+          validate={validateActiveTab}
+          onSubmit={async (values, { setSubmitting }) => {
+            try {
+              setSaveError("");
 
-                if (activeTab === "virtual" && virtualProduct) {
-                  await updateCardProduct(virtualProduct, {
-                    price: values.virtualFee,
-                    discount: values.virtualDiscount,
-                    ...values.virtualDetails,
-                  });
-                }
-
-                if (activeTab === "physical" && physicalProduct) {
-                  await updateCardProduct(physicalProduct, {
-                    price: values.physicalFee,
-                    discount: values.physicalDiscount,
-                    ...values.physicalDetails,
-                  });
-                }
-
-                setFeeSaved(true);
-                setTimeout(() => setFeeSaved(false), 1500);
-              } catch (error) {
-                console.error("Save error:", error);
-                setSaveError(
-                  error?.response?.data?.message ||
-                    "Failed to save card inventory.",
-                );
-              } finally {
-                setSubmitting(false);
+              if (activeTab === "virtual" && virtualProduct) {
+                await updateCardProduct(virtualProduct, {
+                  price: values.virtualFee,
+                  discount: values.virtualDiscount,
+                  ...values.virtualDetails,
+                });
               }
-            }}
-          >
-            {({
-              values,
-              errors,
-              touched,
-              setFieldValue,
-              setFieldTouched,
-              isSubmitting,
-            }) => (
-              <Form>
-                <Tab.Container activeKey={activeTab}>
-                  <Nav as="ul" className="nav nav-tabs mb-3">
+
+              if (activeTab === "physical" && physicalProduct) {
+                await updateCardProduct(physicalProduct, {
+                  price: values.physicalFee,
+                  discount: values.physicalDiscount,
+                  ...values.physicalDetails,
+                });
+              }
+
+              // Pull the saved record back so the image and the offerings
+              // panel show the stored values instead of stale state.
+              await onSaved?.();
+
+              setFeeSaved(true);
+              setTimeout(() => setFeeSaved(false), 1500);
+            } catch (error) {
+              console.error("Save error:", error);
+              setSaveError(extractApiError(error));
+            } finally {
+              setSubmitting(false);
+            }
+          }}
+        >
+          {(formik) => (
+            <Form>
+              <Tab.Container activeKey={activeTab}>
+                <div className="nova-inventory-tabs">
+                  <Nav as="ul" className="nav nav-tabs">
                     <Nav.Item as="li">
                       <Nav.Link
                         eventKey="virtual"
                         onClick={() => setActiveTab("virtual")}
                       >
+                        <i className="pi pi-credit-card me-2" />
                         Virtual Card
                       </Nav.Link>
                     </Nav.Item>
@@ -216,458 +471,57 @@ const SetCardFees = ({ cardProducts }) => {
                         eventKey="physical"
                         onClick={() => setActiveTab("physical")}
                       >
+                        <i className="pi pi-id-card me-2" />
                         Physical Card
                       </Nav.Link>
                     </Nav.Item>
                   </Nav>
-
-                  {cardProducts.length === 0 ? (
-                    <Loading />
-                  ) : (
-                    <Tab.Content>
-                      <Tab.Pane eventKey="virtual">
-                        <label>
-                          Name <span className="text-danger">*</span>
-                        </label>
-                        <InputText
-                          value={values.virtualDetails.name}
-                          onChange={(e) =>
-                            setFieldValue("virtualDetails.name", e.target.value)
-                          }
-                          onBlur={() =>
-                            setFieldTouched("virtualDetails.name", true)
-                          }
-                          className={`w-100 form-control${
-                            touched.virtualDetails?.name &&
-                            errors.virtualDetails?.name
-                              ? "p-invalid"
-                              : ""
-                          }`}
-                        />
-                        <FieldError
-                          show={
-                            touched.virtualDetails?.name &&
-                            errors.virtualDetails?.name
-                          }
-                        >
-                          {errors.virtualDetails?.name}
-                        </FieldError>
-
-                        <label className="mt-3">
-                          Description <span className="text-danger">*</span>
-                        </label>
-                        <InputText
-                          value={values.virtualDetails.description}
-                          onChange={(e) =>
-                            setFieldValue(
-                              "virtualDetails.description",
-                              e.target.value,
-                            )
-                          }
-                          onBlur={() =>
-                            setFieldTouched("virtualDetails.description", true)
-                          }
-                          className={`w-100 form-control ${
-                            touched.virtualDetails?.description &&
-                            errors.virtualDetails?.description
-                              ? "p-invalid"
-                              : ""
-                          }`}
-                        />
-                        <FieldError
-                          show={
-                            touched.virtualDetails?.description &&
-                            errors.virtualDetails?.description
-                          }
-                        >
-                          {errors.virtualDetails?.description}
-                        </FieldError>
-
-                        <label className="mt-3">
-                          Currency <span className="text-danger">*</span>
-                        </label>
-                        <InputText
-                          value={values.virtualDetails.currency}
-                          onChange={(e) =>
-                            setFieldValue(
-                              "virtualDetails.currency",
-                              e.target.value,
-                            )
-                          }
-                          onBlur={() =>
-                            setFieldTouched("virtualDetails.currency", true)
-                          }
-                          className={`w-100 form-control ${
-                            touched.virtualDetails?.currency &&
-                            errors.virtualDetails?.currency
-                              ? "p-invalid"
-                              : ""
-                          }`}
-                        />
-                        <FieldError
-                          show={
-                            touched.virtualDetails?.currency &&
-                            errors.virtualDetails?.currency
-                          }
-                        >
-                          {errors.virtualDetails?.currency}
-                        </FieldError>
-
-                        <label className="mt-3">Image</label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.currentTarget.files?.[0] ?? null;
-                            setFieldValue("virtualDetails.image_file", file);
-                          }}
-                          onBlur={() =>
-                            setFieldTouched("virtualDetails.image_file", true)
-                          }
-                          className={`w-100 form-control ${
-                            touched.virtualDetails?.image_file &&
-                            errors.virtualDetails?.image_file
-                              ? "p-invalid"
-                              : ""
-                          }`}
-                        />
-                        {values.virtualDetails.image_file ? (
-                          <small className="text-muted d-block mt-1">
-                            Selected: {values.virtualDetails.image_file.name}
-                          </small>
-                        ) : values.virtualDetails.image_url ? (
-                          <small className="text-muted d-block mt-1">
-                            Current image is already saved.
-                          </small>
-                        ) : null}
-                        <FieldError
-                          show={
-                            touched.virtualDetails?.image_file &&
-                            errors.virtualDetails?.image_file
-                          }
-                        >
-                          {errors.virtualDetails?.image_file}
-                        </FieldError>
-
-                        <label className="mt-3">
-                         Card Price (USD){" "}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <InputNumber
-                          value={values.virtualFee}
-                          onValueChange={(e) =>
-                            setFieldValue("virtualFee", e.value ?? 0)
-                          }
-                          onBlur={() => setFieldTouched("virtualFee", true)}
-                          className={`w-100 ${
-                            touched.virtualFee && errors.virtualFee
-                              ? "p-invalid"
-                              : ""
-                          }`}
-                          inputClassName="form-control"
-                        />
-                        <FieldError
-                          show={touched.virtualFee && errors.virtualFee}
-                        >
-                          {errors.virtualFee}
-                        </FieldError>
-                        <label className="mt-3">
-                          Discounted Price (USD){" "}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <InputNumber
-                          value={values.virtualDiscount}
-                          onValueChange={(e) =>
-                            setFieldValue("virtualDiscount", e.value ?? 0)
-                          }
-                          onBlur={() =>
-                            setFieldTouched("virtualDiscount", true)
-                          }
-                          className={`w-100 ${
-                            touched.virtualDiscount && errors.virtualDiscount
-                              ? "p-invalid"
-                              : ""
-                          }`}
-                          inputClassName="form-control"
-                        />
-                        <FieldError
-                          show={
-                            touched.virtualDiscount && errors.virtualDiscount
-                          }
-                        >
-                          {errors.virtualDiscount}
-                        </FieldError>
-                      </Tab.Pane>
-
-                      <Tab.Pane eventKey="physical">
-                        <label>
-                          Name <span className="text-danger">*</span>
-                        </label>
-                        <InputText
-                          value={values.physicalDetails.name}
-                          onChange={(e) =>
-                            setFieldValue(
-                              "physicalDetails.name",
-                              e.target.value,
-                            )
-                          }
-                          onBlur={() =>
-                            setFieldTouched("physicalDetails.name", true)
-                          }
-                          className={`w-100 form-control ${
-                            touched.physicalDetails?.name &&
-                            errors.physicalDetails?.name
-                              ? "p-invalid"
-                              : ""
-                          }`}
-                        />
-                        <FieldError
-                          show={
-                            touched.physicalDetails?.name &&
-                            errors.physicalDetails?.name
-                          }
-                        >
-                          {errors.physicalDetails?.name}
-                        </FieldError>
-
-                        <label className="mt-3">
-                          Description <span className="text-danger">*</span>
-                        </label>
-                        <InputText
-                          value={values.physicalDetails.description}
-                          onChange={(e) =>
-                            setFieldValue(
-                              "physicalDetails.description",
-                              e.target.value,
-                            )
-                          }
-                          onBlur={() =>
-                            setFieldTouched("physicalDetails.description", true)
-                          }
-                          className={`w-100 form-control ${
-                            touched.physicalDetails?.description &&
-                            errors.physicalDetails?.description
-                              ? "p-invalid"
-                              : ""
-                          }`}
-                        />
-                        <FieldError
-                          show={
-                            touched.physicalDetails?.description &&
-                            errors.physicalDetails?.description
-                          }
-                        >
-                          {errors.physicalDetails?.description}
-                        </FieldError>
-
-                        <label className="mt-3">
-                          Currency <span className="text-danger">*</span>
-                        </label>
-                        <InputText
-                          value={values.physicalDetails.currency}
-                          onChange={(e) =>
-                            setFieldValue(
-                              "physicalDetails.currency",
-                              e.target.value,
-                            )
-                          }
-                          onBlur={() =>
-                            setFieldTouched("physicalDetails.currency", true)
-                          }
-                          className={`w-100 form-control ${
-                            touched.physicalDetails?.currency &&
-                            errors.physicalDetails?.currency
-                              ? "p-invalid"
-                              : ""
-                          }`}
-                        />
-                        <FieldError
-                          show={
-                            touched.physicalDetails?.currency &&
-                            errors.physicalDetails?.currency
-                          }
-                        >
-                          {errors.physicalDetails?.currency}
-                        </FieldError>
-
-                        <label className="mt-3">
-                          Delivery <span className="text-danger">*</span>
-                        </label>
-                        <InputText
-                          value={values.physicalDetails.delivery}
-                          onChange={(e) =>
-                            setFieldValue(
-                              "physicalDetails.delivery",
-                              e.target.value,
-                            )
-                          }
-                          onBlur={() =>
-                            setFieldTouched("physicalDetails.delivery", true)
-                          }
-                          className={`w-100 form-control ${
-                            touched.physicalDetails?.delivery &&
-                            errors.physicalDetails?.delivery
-                              ? "p-invalid"
-                              : ""
-                          }`}
-                        />
-                        <FieldError
-                          show={
-                            touched.physicalDetails?.delivery &&
-                            errors.physicalDetails?.delivery
-                          }
-                        >
-                          {errors.physicalDetails?.delivery}
-                        </FieldError>
-
-                        <label className="mt-3">
-                          Availability <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          value={values.physicalDetails.availability}
-                          onChange={(e) =>
-                            setFieldValue(
-                              "physicalDetails.availability",
-                              e.target.value,
-                            )
-                          }
-                          onBlur={() =>
-                            setFieldTouched("physicalDetails.availability", true)
-                          }
-                          className={`w-100 form-select ${
-                            touched.physicalDetails?.availability &&
-                            errors.physicalDetails?.availability
-                              ? "is-invalid"
-                              : ""
-                          }`}
-                        >
-                          {AVAILABILITY_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                        <FieldError
-                          show={
-                            touched.physicalDetails?.availability &&
-                            errors.physicalDetails?.availability
-                          }
-                        >
-                          {errors.physicalDetails?.availability}
-                        </FieldError>
-
-                        <label className="mt-3">
-                          Image
-                        </label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.currentTarget.files?.[0] ?? null;
-                            setFieldValue("physicalDetails.image_file", file);
-                          }}
-                          onBlur={() =>
-                            setFieldTouched("physicalDetails.image_file", true)
-                          }
-                          className={`w-100 form-control ${
-                            touched.physicalDetails?.image_file &&
-                            errors.physicalDetails?.image_file
-                              ? "p-invalid"
-                              : ""
-                          }`}
-                        />
-                        {values.physicalDetails.image_file ? (
-                          <small className="text-muted d-block mt-1">
-                            Selected: {values.physicalDetails.image_file.name}
-                          </small>
-                        ) : values.physicalDetails.image_url ? (
-                          <small className="text-muted d-block mt-1">
-                            Current image is already saved.
-                          </small>
-                        ) : null}
-                        <FieldError
-                          show={
-                            touched.physicalDetails?.image_file &&
-                            errors.physicalDetails?.image_file
-                          }
-                        >
-                          {errors.physicalDetails?.image_file}
-                        </FieldError>
-
-                        <label className="mt-3">
-                          Card Price (USD){" "}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <InputNumber
-                          value={values.physicalFee}
-                          onValueChange={(e) =>
-                            setFieldValue("physicalFee", e.value ?? 0)
-                          }
-                          onBlur={() => setFieldTouched("physicalFee", true)}
-                          className={`w-100 ${
-                            touched.physicalFee && errors.physicalFee
-                              ? "p-invalid"
-                              : ""
-                          }`}
-                          inputClassName="form-control"
-                        />
-                        <FieldError
-                          show={touched.physicalFee && errors.physicalFee}
-                        >
-                          {errors.physicalFee}
-                        </FieldError>
-                        <label className="mt-3">
-                          Discounted Price (USD){" "}
-                          <span className="text-danger">*</span>
-                        </label>
-                        <InputNumber
-                          value={values.physicalDiscount}
-                          onValueChange={(e) =>
-                            setFieldValue("physicalDiscount", e.value ?? 0)
-                          }
-                          onBlur={() =>
-                            setFieldTouched("physicalDiscount", true)
-                          }
-                          className={`w-100 ${
-                            touched.physicalDiscount && errors.physicalDiscount
-                              ? "p-invalid"
-                              : ""
-                          }`}
-                          inputClassName="form-control"
-                        />
-                        <FieldError
-                          show={
-                            touched.physicalDiscount && errors.physicalDiscount
-                          }
-                        >
-                          {errors.physicalDiscount}
-                        </FieldError>
-                      </Tab.Pane>
-                    </Tab.Content>
-                  )}
-                </Tab.Container>
-
-                <div className="d-flex justify-content-end mt-3">
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-sm"
-                    disabled={isSubmitting}
-                  >
-                    <i className="pi pi-check me-2" />
-                    {isSubmitting ? "Saving..." : "Save Fees"}
-                  </button>
                 </div>
 
-                {feeSaved && (
-                  <p className="text-success mt-2 mb-0">Fees saved.</p>
+                {cardProducts.length === 0 ? (
+                  <Loading />
+                ) : (
+                  <Tab.Content>
+                    <Tab.Pane eventKey="virtual">
+                      <CardTabFields variant="virtual" {...formik} />
+                    </Tab.Pane>
+
+                    <Tab.Pane eventKey="physical">
+                      <CardTabFields variant="physical" {...formik} />
+                    </Tab.Pane>
+                  </Tab.Content>
                 )}
-                {saveError && (
-                  <p className="text-danger mt-2 mb-0">{saveError}</p>
-                )}
-              </Form>
-            )}
-          </Formik>
-        </div>
+              </Tab.Container>
+
+              <div className="nova-form-actions">
+                <div className="nova-form-actions-status">
+                  {feeSaved && (
+                    <span className="text-success">
+                      <i className="pi pi-check-circle me-1" />
+                      Card inventory saved.
+                    </span>
+                  )}
+                  {saveError && (
+                    <span className="text-danger">
+                      <i className="pi pi-exclamation-circle me-1" />
+                      {saveError}
+                    </span>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-sm"
+                  disabled={formik.isSubmitting}
+                >
+                  <i className="pi pi-check me-2" />
+                  {formik.isSubmitting ? "Saving..." : "Save Inventory"}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </div>
     </div>
   );
 };

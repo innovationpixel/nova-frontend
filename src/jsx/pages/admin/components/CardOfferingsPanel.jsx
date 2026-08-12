@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { request } from "../../../../utils/api";
 import { cardInventory, cardSubscriptions } from "../../../data/adminData";
-import { formatCardMoney, normalizeCardType, normalizeStatusLabel } from "../../../../utils";
+import {
+  formatCardMoney,
+  normalizeCardType,
+  normalizeStatusLabel,
+  resolveImageSrc,
+} from "../../../../utils";
 
 const CARD_TYPE_DETAILS = {
   Virtual: {
@@ -26,29 +31,35 @@ const resolveAvailability = (product) => {
   return "Available";
 };
 
-const CardOfferingsPanel = () => {
-  const [cardProducts, setCardProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+const CardOfferingsPanel = ({ products, loading: loadingProp }) => {
+  const isControlled = Array.isArray(products);
+  const [fetchedProducts, setFetchedProducts] = useState([]);
+  const [fetching, setFetching] = useState(!isControlled);
 
   useEffect(() => {
+    if (isControlled) return;
+
     const fetchCardProducts = async () => {
-      setLoading(true);
+      setFetching(true);
       try {
         const res = await request({
           url: "card-products",
           method: "GET",
         });
-        setCardProducts(res?.data?.data ?? []);
+        setFetchedProducts(res?.data?.data ?? []);
       } catch (error) {
         console.error(error);
-        setCardProducts([]);
+        setFetchedProducts([]);
       } finally {
-        setLoading(false);
+        setFetching(false);
       }
     };
 
     fetchCardProducts();
-  }, []);
+  }, [isControlled]);
+
+  const cardProducts = isControlled ? products : fetchedProducts;
+  const loading = isControlled ? Boolean(loadingProp) : fetching;
 
   const cards = useMemo(() => {
     const fallbackMap = new Map(cardInventory.map((card) => [card.type, card]));
@@ -71,7 +82,7 @@ const CardOfferingsPanel = () => {
         fee: Number(product?.price ?? fallback?.fee ?? 0),
         discount: Number(product?.discount ?? 0),
         status: resolveAvailability(product),
-        image: product?.image_url || fallback?.image,
+        image: resolveImageSrc(product?.image_url, fallback?.image),
         description: product?.description || fallback?.description,
         delivery: product?.delivery,
       };
@@ -92,7 +103,7 @@ const CardOfferingsPanel = () => {
               <div>
                 <h4 className="mb-1">Card Offerings</h4>
                 <p className="mb-0 text-muted">
-                  Active subscribers: {activeSubs} | {cardCount} card types live
+                  Active subscribers: {activeSubs}
                 </p>
               </div>
               <span className="badge bg-light text-dark">

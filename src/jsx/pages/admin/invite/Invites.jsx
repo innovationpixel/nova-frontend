@@ -108,8 +108,10 @@ const Invites = () => {
           </p>
         </div>
 
+        {/* Invite totals and payout live in the stat cards below, so the hero
+            only carries the metric that is not repeated there. */}
         <div className="nova-page-hero-metrics">
-          <div className="nova-page-hero-metric">
+          <div className="nova-page-hero-metric is-highlight">
             <span>Acceptance Rate</span>
             <strong>
               {statsLoading && loadingInviteList
@@ -117,44 +119,30 @@ const Invites = () => {
                 : `${metrics.acceptanceRate}%`}
             </strong>
           </div>
-          <div className="nova-page-hero-metric">
-            <span>Active Referrers</span>
-            <strong>
-              {loadingInviteList ? "..." : metrics.total.toLocaleString()}
-            </strong>
-          </div>
-          <div className="nova-page-hero-metric is-highlight">
-            <span>Total Payout</span>
-            <strong>
-              {statsLoading && loadingInviteList
-                ? "..."
-                : `$${Number(metrics.payout).toLocaleString()}`}
-            </strong>
-          </div>
         </div>
       </div>
 
-      <div className="row g-3 mb-3">
+      <div className="nova-stat-grid mb-3">
         {statCards.map((card) => (
-          <div className="col-xl-3 col-md-6" key={card.key}>
-            <InsightStatCard
-              title={card.title}
-              value={formatStatValue(card)}
-              icon={card.icon}
-              tone={card.tone}
-              hint={card.hint}
-            />
-          </div>
+          <InsightStatCard
+            key={card.key}
+            title={card.title}
+            value={formatStatValue(card)}
+            icon={card.icon}
+            tone={card.tone}
+            hint={card.hint}
+          />
         ))}
       </div>
 
-      <div className="row g-2 mb-3 nova-page-insights-row">
-        <div className="col-xl-6">
-          <RewardRule />
-        </div>
-        <div className="col-xl-6">
-          <InviteOverview stats={referralStats} loading={statsLoading} />
-        </div>
+      {/* Full width, one per row: side by side these two never matched height,
+          which left a tall gap under the shorter panel. */}
+      <div className="mb-3">
+        <RewardRule />
+      </div>
+
+      <div className="mb-3">
+        <InviteOverview stats={referralStats} loading={statsLoading} />
       </div>
 
       <InviteTable

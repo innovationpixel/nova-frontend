@@ -53037,9 +53037,9 @@ div#example5_wrapper .form-check-input {
 /* Custom table refresh */
 .table,
 .p-datatable {
-  --nova-table-accent: #2a6587;
+  --nova-table-accent: var(--primary);
   --nova-table-border: #e3edf4;
-  --nova-table-head-bg: #2a6587;
+  --nova-table-head-bg: var(--primary);
   --nova-table-head-text: #ffffff;
   --nova-table-row-hover: #f3f8fb;
 }
@@ -53110,7 +53110,7 @@ div#example5_wrapper .form-check-input {
 }
 
 .p-datatable .p-paginator .p-paginator-page:focus {
-  box-shadow: 0 0 0 0.2rem rgba(42, 101, 135, 0.2);
+  box-shadow: 0 0 0 0.2rem var(--rgba-primary-2);
 }
 
 .nova-table .p-datatable-header {
@@ -53161,12 +53161,12 @@ div#example5_wrapper .form-check-input {
 }
 
 .nova-input .p-inputtext:focus {
-  border-color: #2a6587;
-  box-shadow: 0 0 0 0.2rem rgba(42, 101, 135, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.2rem var(--rgba-primary-2);
 }
 
 .nova-input .pi {
-  color: #2a6587;
+  color: var(--primary);
   left: 0.75rem;
 }
 
@@ -53188,7 +53188,7 @@ div#example5_wrapper .form-check-input {
 }
 
 .nova-action-button:focus {
-  box-shadow: 0 0 0 0.2rem rgba(42, 101, 135, 0.2);
+  box-shadow: 0 0 0 0.2rem var(--rgba-primary-2);
 }
 
 .nova-action-panel {
@@ -53234,8 +53234,8 @@ div#example5_wrapper .form-check-input {
 
 .nova-action-content .p-inputtext:focus,
 .nova-action-content .p-dropdown:not(.p-disabled).p-focus {
-  border-color: #2a6587;
-  box-shadow: 0 0 0 0.2rem rgba(42, 101, 135, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.2rem var(--rgba-primary-2);
 }
 
 .nova-action-content .form-label {
@@ -53296,7 +53296,7 @@ div#example5_wrapper .form-check-input {
 }
 
 .nova-action-dialog .p-dialog-header-icon:focus {
-  box-shadow: 0 0 0 0.2rem rgba(42, 101, 135, 0.2);
+  box-shadow: 0 0 0 0.2rem var(--rgba-primary-2);
 }
 
 .nova-action-dialog .p-button {
@@ -53308,23 +53308,23 @@ div#example5_wrapper .form-check-input {
 
 .nova-action-dialog .p-button.p-button-secondary {
   background-color: #ffffff;
-  color: #2a6587;
-  border: 1px solid rgba(42, 101, 135, 0.25);
+  color: var(--primary);
+  border: 1px solid var(--rgba-primary-3);
 }
 
 .nova-action-dialog .p-button.p-button-secondary:hover {
-  background-color: rgba(42, 101, 135, 0.08);
-  border-color: rgba(42, 101, 135, 0.35);
+  background-color: var(--rgba-primary-1);
+  border-color: var(--rgba-primary-4);
 }
 
 .nova-action-dialog .p-button.p-button-primary {
-  background-color: #2a6587;
-  border-color: #2a6587;
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 
 .nova-action-dialog .p-button.p-button-primary:hover {
-  background-color: #245675;
-  border-color: #245675;
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
 }
 
 .nova-action-dialog .p-button.p-button-danger {
@@ -53346,13 +53346,13 @@ div#example5_wrapper .form-check-input {
 }
 
 .p-datatable .p-column-filter-menu-button {
-  color: #2a6587;
+  color: var(--primary);
 }
 
 .p-datatable .p-column-filter-menu-button:hover,
 .p-datatable .p-column-filter-menu-button.p-column-filter-menu-button-open {
-  background-color: rgba(42, 101, 135, 0.12);
-  color: #1d4258;
+  background-color: var(--rgba-primary-1);
+  color: var(--primary-dark);
 }
 
 .p-column-filter-overlay {
@@ -53398,7 +53398,7 @@ div#example5_wrapper .form-check-input {
   border-radius: 0.75rem;
   border-color: #d6e3ec;
   background-color: #ffffff;
-  box-shadow: 0 6px 12px rgba(42, 101, 135, 0.08);
+  box-shadow: 0 6px 12px var(--rgba-primary-1);
 }
 
 .p-column-filter-overlay .p-inputtext {
@@ -53415,12 +53415,12 @@ div#example5_wrapper .form-check-input {
 
 .p-column-filter-overlay .p-dropdown-trigger {
   width: 2.8rem;
-  color: #2a6587;
+  color: var(--primary);
   border-left: 1px solid #e7eef4;
 }
 
 .p-column-filter-overlay .p-column-filter-add-rule {
-  color: #2a6587;
+  color: var(--primary);
   font-weight: 600;
   padding: 0.4rem 0.5rem;
   border-radius: 0.5rem;
@@ -53431,7 +53431,7 @@ div#example5_wrapper .form-check-input {
 }
 
 .p-column-filter-overlay .p-column-filter-add-rule:hover {
-  background-color: rgba(42, 101, 135, 0.08);
+  background-color: var(--rgba-primary-1);
 }
 
 .p-column-filter-overlay .p-inputtext,
@@ -53444,8 +53444,8 @@ div#example5_wrapper .form-check-input {
 
 .p-column-filter-overlay .p-inputtext:focus,
 .p-column-filter-overlay .p-dropdown:not(.p-disabled).p-focus {
-  border-color: #2a6587;
-  box-shadow: 0 0 0 0.2rem rgba(42, 101, 135, 0.12);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.2rem var(--rgba-primary-1);
 }
 
 .p-column-filter-overlay .p-column-filter-buttonbar {
@@ -53454,24 +53454,24 @@ div#example5_wrapper .form-check-input {
 }
 
 .p-column-filter-overlay .p-button.p-button-text {
-  color: #2a6587;
+  color: var(--primary);
   background-color: transparent;
   border-radius: 999px;
 }
 
 .p-column-filter-overlay .p-button.p-button-text:hover {
-  background-color: rgba(42, 101, 135, 0.08);
+  background-color: var(--rgba-primary-1);
 }
 
 .p-column-filter-overlay .p-button.p-button-primary {
-  background-color: #2a6587;
-  border-color: #2a6587;
+  background-color: var(--primary);
+  border-color: var(--primary);
   border-radius: 999px;
 }
 
 .p-column-filter-overlay .p-button.p-button-primary:hover {
-  background-color: #245675;
-  border-color: #245675;
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
 }
 
 .p-column-filter-overlay .p-column-filter-buttonbar {
@@ -53491,7 +53491,7 @@ div#example5_wrapper .form-check-input {
 }
 
 .p-column-filter-overlay .p-dropdown .p-dropdown-trigger {
-  color: #2a6587;
+  color: var(--primary);
 }
 
 .p-column-filter-overlay .p-inputtext,
@@ -53510,16 +53510,16 @@ div#example5_wrapper .form-check-input {
 .p-column-filter-overlay
   .p-column-filter-row
   .p-dropdown:not(.p-disabled).p-focus {
-  border-color: #2a6587;
-  box-shadow: 0 0 0 0.2rem rgba(42, 101, 135, 0.12);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.2rem var(--rgba-primary-1);
 }
 
 .p-column-filter-overlay .p-column-filter-buttonbar .p-button-text {
-  border: 1px solid rgba(42, 101, 135, 0.3);
+  border: 1px solid var(--rgba-primary-3);
 }
 
 .p-column-filter-overlay .p-column-filter-buttonbar .p-button-text:hover {
-  border-color: rgba(42, 101, 135, 0.45);
+  border-color: var(--rgba-primary-5);
 }
 
 .p-column-filter-overlay .p-dropdown,
@@ -53529,7 +53529,7 @@ div#example5_wrapper .form-check-input {
 
 .p-column-filter-overlay .p-dropdown:hover,
 .p-column-filter-overlay .p-inputtext:hover {
-  border-color: rgba(42, 101, 135, 0.4);
+  border-color: var(--rgba-primary-4);
 }
 
 .p-column-filter-overlay .p-dropdown-label,
@@ -53543,8 +53543,8 @@ div#example5_wrapper .form-check-input {
 }
 
 .p-dropdown:not(.p-disabled).p-focus {
-  border-color: #2a6587;
-  box-shadow: 0 0 0 0.2rem rgba(42, 101, 135, 0.12);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.2rem var(--rgba-primary-1);
 }
 
 .p-button {
@@ -53558,26 +53558,26 @@ div#example5_wrapper .form-check-input {
 
 .p-button.p-button-primary,
 .p-button.p-button-success {
-  background-color: #2a6587;
-  border-color: #2a6587;
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 
 .p-button.p-button-primary:hover,
 .p-button.p-button-success:hover {
-  background-color: #245675;
-  border-color: #245675;
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
 }
 
 .p-button.p-button-secondary {
   background-color: #eef2f5;
-  color: #2a6587;
+  color: var(--primary);
   border-color: #d6e3ec;
 }
 
 .p-button.p-button-secondary:hover {
   background-color: #e3e8ec;
   border-color: #c9d7e2;
-  color: #245675;
+  color: var(--primary-dark);
 }
 
 .p-button .p-button-icon {
@@ -53606,7 +53606,7 @@ div#example5_wrapper .form-check-input {
 }
 
 .nova-profile-actions .p-button {
-  box-shadow: 0 8px 16px rgba(42, 101, 135, 0.12);
+  box-shadow: 0 8px 16px var(--rgba-primary-1);
 }
 
 .p-dropdown-panel {
@@ -53631,15 +53631,17 @@ div#example5_wrapper .form-check-input {
 }
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
-  background-color: rgba(42, 101, 135, 0.16);
-  color: #1d4258;
+  background-color: var(--rgba-primary-2);
+  color: var(--primary-dark);
   font-weight: 600;
 }
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item:hover {
-  background-color: rgba(42, 101, 135, 0.08);
+  background-color: var(--rgba-primary-1);
 }
 
+/* The one place brand literals belong: this is the Nova palette itself.
+   Everything else in the admin refers to these tokens. */
 :root,
 [data-primary="color_2"] {
   --primary: #2a6587;
@@ -53658,14 +53660,14 @@ div#example5_wrapper .form-check-input {
   --bs-primary: #2a6587;
   --bs-primary-rgb: 42, 101, 135;
   --bs-primary-text-emphasis: #163c52;
-  --bs-primary-bg-subtle: #e6f0f5;
-  --bs-primary-border-subtle: #c8dde7;
+  --bs-primary-bg-subtle: var(--rgba-primary-1);
+  --bs-primary-border-subtle: var(--rgba-primary-3);
 }
 
 .card.nova-panel {
   border: 1px solid #e3edf4;
   border-radius: 1rem;
-  box-shadow: 0 12px 24px rgba(42, 101, 135, 0.08);
+  box-shadow: 0 12px 24px var(--rgba-primary-1);
   background-color: #fff;
 }
 
@@ -53706,7 +53708,7 @@ div#example5_wrapper .form-check-input {
 }
 
 .p-dropdown .p-dropdown-trigger {
-  color: #2a6587;
+  color: var(--primary);
 }
 
 .form-control,
@@ -53723,8 +53725,8 @@ select.form-control,
 
 .form-control:focus,
 .form-select:focus {
-  border-color: #2a6587;
-  box-shadow: 0 0 0 0.2rem rgba(42, 101, 135, 0.12);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.2rem var(--rgba-primary-1);
 }
 
 .form-label {
@@ -53734,18 +53736,18 @@ select.form-control,
 
 .btn-primary {
   --bs-btn-color: #ffffff;
-  --bs-btn-bg: #2a6587;
-  --bs-btn-border-color: #2a6587;
+  --bs-btn-bg: var(--primary);
+  --bs-btn-border-color: var(--primary);
   --bs-btn-hover-color: #ffffff;
-  --bs-btn-hover-bg: #245675;
-  --bs-btn-hover-border-color: #245675;
+  --bs-btn-hover-bg: var(--primary-dark);
+  --bs-btn-hover-border-color: var(--primary-dark);
   --bs-btn-focus-shadow-rgb: 42, 101, 135;
   --bs-btn-active-color: #ffffff;
   --bs-btn-active-bg: #1f4f6a;
   --bs-btn-active-border-color: #1f4f6a;
   --bs-btn-disabled-color: #ffffff;
-  --bs-btn-disabled-bg: #2a6587;
-  --bs-btn-disabled-border-color: #2a6587;
+  --bs-btn-disabled-bg: var(--primary);
+  --bs-btn-disabled-border-color: var(--primary);
 }
 
 .btn-secondary {
@@ -53765,19 +53767,19 @@ select.form-control,
 }
 
 .btn-outline-primary {
-  --bs-btn-color: #2a6587;
-  --bs-btn-border-color: rgba(42, 101, 135, 0.35);
+  --bs-btn-color: var(--primary);
+  --bs-btn-border-color: var(--rgba-primary-4);
   --bs-btn-hover-color: #ffffff;
-  --bs-btn-hover-bg: #2a6587;
-  --bs-btn-hover-border-color: #2a6587;
+  --bs-btn-hover-bg: var(--primary);
+  --bs-btn-hover-border-color: var(--primary);
   --bs-btn-active-color: #ffffff;
-  --bs-btn-active-bg: #245675;
-  --bs-btn-active-border-color: #245675;
+  --bs-btn-active-bg: var(--primary-dark);
+  --bs-btn-active-border-color: var(--primary-dark);
 }
 
 .btn-primary.light {
-  background-color: rgba(42, 101, 135, 0.12);
-  color: #2a6587;
+  background-color: var(--rgba-primary-1);
+  color: var(--primary);
   border-color: transparent;
 }
 
@@ -53797,13 +53799,13 @@ select.form-control,
 .select-data .rs-picker-toggle:focus,
 .drop-data-select .rs-picker-toggle:hover,
 .drop-data-select .rs-picker-toggle:focus {
-  border-color: #2a6587 !important;
-  box-shadow: 0 0 0 0.2rem rgba(42, 101, 135, 0.12);
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 0.2rem var(--rgba-primary-1);
 }
 
 .select-data .rs-picker-caret-icon,
 .drop-data-select .rs-picker-caret-icon {
-  color: #2a6587;
+  color: var(--primary);
 }
 
 .rs-picker-menu {
@@ -53814,8 +53816,8 @@ select.form-control,
 
 .rs-picker-select-menu-item.rs-picker-select-menu-item-active,
 .rs-picker-select-menu-item:hover {
-  background-color: rgba(42, 101, 135, 0.12);
-  color: #1d4258;
+  background-color: var(--rgba-primary-1);
+  color: var(--primary-dark);
 }
 
 .custom-react-select > div:nth-child(3) {
@@ -53824,7 +53826,7 @@ select.form-control,
 }
 
 .custom-react-select > div:nth-child(3):hover {
-  border-color: #2a6587 !important;
+  border-color: var(--primary) !important;
 }
 
 .custom-react-select > div:nth-child(4) {
@@ -53832,8 +53834,8 @@ select.form-control,
 }
 
 .custom-react-select > div:nth-child(4) > div > div:hover {
-  background-color: rgba(42, 101, 135, 0.08);
-  color: #1d4258;
+  background-color: var(--rgba-primary-1);
+  color: var(--primary-dark);
 }
 
 .nova-profile-card {
@@ -53848,7 +53850,7 @@ select.form-control,
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #2a6587 0%, #4f96b8 60%, #7cc0dd 100%);
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-hover) 60%, var(--rgba-primary-5) 100%);
 }
 
 .nova-profile-hero {
@@ -53873,7 +53875,7 @@ select.form-control,
   width: 4.75rem;
   height: 4.75rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, #2a6587 0%, #3a7a9c 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
   color: #fff;
   font-size: 1.5rem;
   font-weight: 700;
@@ -53882,8 +53884,8 @@ select.form-control,
   justify-content: center;
   box-shadow:
     0 0 0 3px #fff,
-    0 0 0 5px rgba(42, 101, 135, 0.2),
-    0 10px 20px rgba(42, 101, 135, 0.2);
+    0 0 0 5px var(--rgba-primary-2),
+    0 10px 20px var(--rgba-primary-2);
 }
 
 .nova-profile-badges {
@@ -53956,7 +53958,7 @@ select.form-control,
 
 .nova-profile-contact:hover {
   border-color: #c9dded;
-  box-shadow: 0 8px 18px rgba(42, 101, 135, 0.08);
+  box-shadow: 0 8px 18px var(--rgba-primary-1);
   transform: translateY(-2px);
 }
 
@@ -53968,8 +53970,8 @@ select.form-control,
   display: flex !important;
   align-items: center;
   justify-content: center;
-  background: rgba(42, 101, 135, 0.12);
-  color: #2a6587 !important;
+  background: var(--rgba-primary-1);
+  color: var(--primary) !important;
   font-size: 1rem !important;
 }
 
@@ -54067,8 +54069,8 @@ select.form-control,
 }
 
 .nova-profile-pill {
-  background: rgba(42, 101, 135, 0.1);
-  color: #2a6587;
+  background: var(--rgba-primary-1);
+  color: var(--primary);
   padding: 0.25rem 0.7rem;
   border-radius: 999px;
   font-size: 0.75rem;
@@ -54118,7 +54120,7 @@ select.form-control,
 }
 
 .nova-legend-dot.success {
-  background: #2a6587;
+  background: var(--primary);
 }
 
 .nova-legend-dot.warning {
@@ -54165,8 +54167,8 @@ select.form-control,
 }
 
 .nova-profile-chip {
-  background: rgba(42, 101, 135, 0.12);
-  color: #2a6587;
+  background: var(--rgba-primary-1);
+  color: var(--primary);
   border-radius: 999px;
   padding: 0.3rem 0.8rem;
   font-size: 0.75rem;
@@ -54192,7 +54194,7 @@ select.form-control,
   width: 0.65rem;
   height: 0.65rem;
   border-radius: 999px;
-  background: #2a6587;
+  background: var(--primary);
   animation: novaDotBounce 1.2s infinite ease-in-out;
 }
 
@@ -54222,7 +54224,7 @@ select.form-control,
   border: 1px solid #e3edf4;
   border-radius: 1rem;
   background: linear-gradient(180deg, #ffffff 0%, #f9fbfd 100%);
-  box-shadow: 0 10px 22px rgba(42, 101, 135, 0.08);
+  box-shadow: 0 10px 22px var(--rgba-primary-1);
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
@@ -54231,7 +54233,7 @@ select.form-control,
 
 .widget-stat.card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 28px rgba(42, 101, 135, 0.12);
+  box-shadow: 0 16px 28px var(--rgba-primary-1);
 }
 
 .widget-stat.card .card-body {
@@ -54251,7 +54253,7 @@ select.form-control,
   border-radius: 0.9rem;
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.4),
-    0 8px 14px rgba(42, 101, 135, 0.1);
+    0 8px 14px var(--rgba-primary-1);
 }
 
 .widget-stat .media > span svg {
@@ -54345,4 +54347,84 @@ select.form-control,
 }
 .nova-filter-bar .nova-range-panel .p-calendar {
   box-shadow: none;
+}
+
+/* ==========================================================================
+   Unified badges
+   One padding / radius / type scale for every status badge, chip and pill in
+   the admin. Colours stay with each component, only the shape is shared.
+   `.p-tag` is doubled because the PrimeReact theme stylesheet loads last.
+   ========================================================================== */
+.p-tag.p-tag,
+.badge,
+.nova-status-pill,
+.nova-profile-pill,
+.nova-profile-chip,
+.nova-card-type-badge,
+.nova-card-status,
+.nova-card-chip,
+.nova-card-bound-chip,
+.nova-card-id-chip,
+.nova-invite-metric-chip,
+.nova-invite-level-pill,
+.nova-invite-level-badge,
+.nova-kyc-date-chip,
+.nova-referral-section-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 1.5rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* Uppercase chips keep their tracking so the shorter text stays legible. */
+.nova-card-chip,
+.nova-card-status {
+  letter-spacing: 0.06em;
+}
+
+/* Icons sit on the same baseline in every badge. */
+.p-tag.p-tag > .p-tag-icon,
+.nova-status-pill > .pi,
+.nova-invite-metric-chip > .pi,
+.nova-card-bound-chip > .pi {
+  font-size: 0.7rem;
+  margin: 0;
+}
+
+/* ==========================================================================
+   Table polish shared by every admin table
+   ========================================================================== */
+.p-datatable .p-datatable-thead > tr > th {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  vertical-align: middle;
+  font-size: 0.88rem;
+}
+
+.p-datatable .p-datatable-tbody > tr:last-child > td {
+  border-bottom: 0;
+}
+
+/* Badges stacked next to each other keep one rhythm. */
+.nova-card-badges,
+.nova-profile-badges,
+.nova-profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
 }

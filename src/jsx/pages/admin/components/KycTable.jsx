@@ -17,6 +17,7 @@ import {
 import TableFilters from "../../../components/utilComponents/TableFilters";
 import Loading from "../../../components/utilComponents/Loading";
 import { KYC_STATUS_OPTIONS, ORDER_OPTIONS } from "../../../constant/ApplicationModel";
+import { buildRecordDetails, dedupeGroups } from "./recordDetails";
 
 const KYC_ENDPOINT = "/tevau/kyc";
 const FILTER_CONFIG = {
@@ -32,6 +33,63 @@ const getInitials = (value) => {
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return `${parts[0][0] || ""}${parts[1][0] || ""}`.toUpperCase();
 };
+
+/** A scan that 404s is dropped rather than left as a broken placeholder. */
+const DocumentCard = ({ image }) => {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+
+  return (
+    <a
+      className="nova-doc-card"
+      href={image.src}
+      target="_blank"
+      rel="noreferrer"
+      title={`Open ${image.label} full size`}
+    >
+      <span className="nova-doc-card-media">
+        <img
+          src={image.src}
+          alt={image.label}
+          onError={() => setFailed(true)}
+        />
+      </span>
+      <span className="nova-doc-card-label">
+        {image.label}
+        <i className="pi pi-external-link" />
+      </span>
+    </a>
+  );
+};
+
+const DocumentThumb = ({ src }) => {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+
+  return (
+    <a
+      className="nova-doc-thumb"
+      href={src}
+      target="_blank"
+      rel="noreferrer"
+      title="Open document"
+    >
+      <img src={src} alt="Identity document" onError={() => setFailed(true)} />
+    </a>
+  );
+};
+
+// Values the list mapper derives for the table, plus everything the hero and
+// the summary tiles already render. The rest of the record is shown as-is.
+const DERIVED_KEYS = [
+  "fullName",
+  "email",
+  "identityCard",
+  "submittedAt",
+  "approvedAt",
+  "identityCardValidityTime",
+  "statusLabel",
+];
 
 const KycTable = ({ title, setKYCSummaryLoading, setKycSummary }) => {
   const dt = useRef(null);
@@ -122,6 +180,26 @@ const KycTable = ({ title, setKYCSummaryLoading, setKycSummary }) => {
     <span className="nova-card-id-chip">{rowData.identityCard}</span>
   );
 
+  // Key-agnostic and de-duplicated: one thumbnail per document.
+  const rowDocuments = (rowData) => buildRecordDetails(rowData).images;
+
+  const hasDocuments = kycList.some((row) => rowDocuments(row).length > 0);
+
+  const documentsTemplate = (rowData) => {
+    const documents = rowDocuments(rowData);
+    if (!documents.length) {
+      return <span className="text-muted small">No scans</span>;
+    }
+
+    return (
+      <div className="nova-doc-thumbs">
+        {documents.map((image) => (
+          <DocumentThumb key={image.src} src={image.src} />
+        ))}
+      </div>
+    );
+  };
+
   const statusTemplate = (rowData) => (
     <Tag
       value={rowData.statusLabel}
@@ -131,15 +209,11 @@ const KycTable = ({ title, setKYCSummaryLoading, setKycSummary }) => {
 
   const timelineTemplate = (rowData) => (
     <div className="nova-kyc-timeline">
-      <div>
-        <span className="text-muted">Submitted</span>
-        <strong>{formatDateTime(rowData.submittedAt)}</strong>
-      </div>
+      <strong>{formatDateTime(rowData.submittedAt)}</strong>
       {rowData.approvedAt ? (
-        <div>
-          <span className="text-muted">Approved</span>
-          <strong>{formatDateTime(rowData.approvedAt)}</strong>
-        </div>
+        <span className="text-muted small">
+          Approved {formatDate(rowData.approvedAt)}
+        </span>
       ) : null}
     </div>
   );
@@ -201,78 +275,47 @@ const KycTable = ({ title, setKYCSummaryLoading, setKycSummary }) => {
     </div>
   );
 
-  const formatAdditionalDetailValue = (key, value) => {
-    if (typeof value !== "string") return value;
+  // Everything the endpoint returns, with the document scans split out so they
+  // render as images instead of raw URLs.
+  const autoDetails = buildRecordDetails(detailRecord, {
+    skipKeys: [
+      ...DERIVED_KEYS,
+      "id",
+      "status",
+      "identity_card",
+      "submitted_at",
+      "approved_at",
+      "identity_card_validity_time",
+    ],
+    rootTitle: "Applicant Record",
+  });
 
-    const normalizedKey = key.toLowerCase();
-    const isDateField =
-      normalizedKey.includes("date") ||
-      normalizedKey.includes("birthday") ||
-      normalizedKey.endsWith("_at");
-
-    if (!isDateField) return value;
-
-    return normalizedKey.includes("birthday")
-      ? formatDate(value)
-      : formatDateTime(value);
-  };
-
-  const additionalDetailEntries = detailRecord
-    ? Object.entries(detailRecord).filter(([key, value]) => {
-        const excludedKeys = new Set([
-          "id",
-          "fullName",
-          "email",
-          "first_name_en",
-          "identity_card",
-          "identityCard",
-          "identity_back_pic_url",
-          "identity_front_pic_url",
-          "status",
-          "statusLabel",
-          "submitted_at",
-          "submittedAt",
-          "tevau_user_id",
-          "user_code",
-          "updated_at",
-          "approved_at",
-          "approvedAt",
-          "identity_card_validity_time",
-          "identityCardValidityTime",
-        ]);
-
-        if (excludedKeys.has(key)) return false;
-        if (value === null || value === undefined || value === "") return false;
-        if (value instanceof Date) return false;
-        if (typeof value === "object") return false;
-
-        return true;
-      })
+  const alreadyShownPairs = detailRecord
+    ? [
+        `Full Name|${getDisplayValue(detailRecord.fullName)}`,
+        `Email|${getDisplayValue(detailRecord.email)}`,
+        `Identity Card|${getDisplayValue(detailRecord.identityCard)}`,
+        `Status|${detailRecord.statusLabel}`,
+      ]
     : [];
 
-  const detailFields = detailRecord
-    ? [
-        { label: "KYC ID", value: getDisplayValue(detailRecord.id) },
-        { label: "Name", value: getDisplayValue(detailRecord.fullName) },
-        { label: "Email", value: getDisplayValue(detailRecord.email) },
-        {
-          label: "Identity Card",
-          value: getDisplayValue(detailRecord.identityCard),
-        },
-        { label: "Status", value: detailRecord.statusLabel },
-        {
-          label: "Submitted At",
-          value: formatDateTime(detailRecord.submittedAt),
-        },
-        {
-          label: "Approved At",
-          value: formatDateTime(detailRecord.approvedAt),
-        },
-        {
-          label: "ID Validity",
-          value: formatDate(detailRecord.identityCardValidityTime),
-        },
-      ]
+  const detailGroups = detailRecord
+    ? dedupeGroups(
+        [
+          {
+            title: "Verification",
+            fields: [
+              { label: "KYC ID", value: getDisplayValue(detailRecord.id) },
+              {
+                label: "Approved At",
+                value: formatDateTime(detailRecord.approvedAt),
+              },
+            ],
+          },
+          ...autoDetails.groups,
+        ],
+        alreadyShownPairs,
+      )
     : [];
 
   return (
@@ -293,16 +336,18 @@ const KycTable = ({ title, setKYCSummaryLoading, setKycSummary }) => {
             emptyMessage={emptyMessage}
             className="p-datatable-sm nova-table nova-cards-table"
           >
-            <Column field="id" header="ID" sortable />
             <Column header="Applicant" body={applicantTemplate} sortable />
             <Column header="Identity" body={identityTemplate} sortable />
+            {hasDocuments ? (
+              <Column header="Documents" body={documentsTemplate} />
+            ) : null}
             <Column
               field="statusLabel"
               header="Status"
               body={statusTemplate}
               sortable
             />
-            <Column header="Timeline" body={timelineTemplate} />
+            <Column header="Submitted" body={timelineTemplate} sortable />
             <Column header="ID Validity" body={validityTemplate} />
             <Column header="Action" body={actionTemplate} />
           </DataTable>
@@ -313,7 +358,8 @@ const KycTable = ({ title, setKYCSummaryLoading, setKycSummary }) => {
         show={detailOpen}
         onHide={() => setDetailOpen(false)}
         centered
-        size="lg"
+        scrollable
+        size="xl"
         className="nova-cards-modal"
       >
         <div className="modal-content">
@@ -371,34 +417,33 @@ const KycTable = ({ title, setKYCSummaryLoading, setKycSummary }) => {
                   </div>
                 </div>
 
-                <div className="nova-profile-list mb-4">
-                  {detailFields.map((field) => (
-                    <div className="nova-profile-list-row" key={field.label}>
-                      <span>{field.label}</span>
-                      <strong>{field.value}</strong>
+                {autoDetails.images.length > 0 && (
+                  <div className="nova-detail-group">
+                    <h6 className="nova-detail-group-title">Documents</h6>
+                    <div className="nova-doc-grid">
+                      {autoDetails.images.map((image) => (
+                        <DocumentCard key={image.src} image={image} />
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
 
-                {additionalDetailEntries.length > 0 && (
-                  <>
-                    <h6 className="mb-2">Additional Details</h6>
-                    <div className="nova-profile-list">
-                      {additionalDetailEntries.map(([key, value]) => (
-                        <div className="nova-profile-list-row" key={key}>
-                          <span>
-                            {normalizeStatusLabel(key.replace(/_/g, " "))}
-                          </span>
-                          <strong>
-                            {getDisplayValue(
-                              formatAdditionalDetailValue(key, value),
-                            )}
-                          </strong>
+                {detailGroups.map((group) => (
+                  <div className="nova-detail-group" key={group.title}>
+                    <h6 className="nova-detail-group-title">{group.title}</h6>
+                    <div className="nova-detail-grid">
+                      {group.fields.map((field) => (
+                        <div
+                          className="nova-profile-list-row"
+                          key={`${group.title}-${field.label}`}
+                        >
+                          <span>{field.label}</span>
+                          <strong>{field.value}</strong>
                         </div>
                       ))}
                     </div>
-                  </>
-                )}
+                  </div>
+                ))}
               </>
             )}
           </div>

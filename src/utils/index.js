@@ -84,6 +84,16 @@ export const showImage = (path) => {
 };
 
 /**
+ * Resolve an image value coming from the API. Absolute URLs and data URIs are
+ * used as-is, storage paths get the image host prefixed, empty uses fallback.
+ */
+export const resolveImageSrc = (value, fallback = "") => {
+  if (!value) return fallback;
+  if (/^(https?:)?\/\//i.test(value) || value.startsWith("data:")) return value;
+  return `${IMAGE_BASE_URL}${value}`;
+};
+
+/**
  * handle yup validation errors
 */
 export const handleYupErrors = (err, initialErrors, setErrors) => {
@@ -240,4 +250,44 @@ export const currencyPrefix = (currency) => {
   if (c === "EUR") return "€";
   if (c === "GBP") return "£";
   return ""; // fallback
+};
+/**
+ * Charts read the live theme colour instead of hardcoding one, so a palette
+ * change from the theme switcher carries into every series.
+ */
+export const getThemeColor = (name = "--primary", fallback = "#2696fd") => {
+  if (typeof window === "undefined" || !document?.body) return fallback;
+  const value = getComputedStyle(document.body).getPropertyValue(name);
+  return value.trim() || fallback;
+};
+
+const toRgb = (color) => {
+  const hex = String(color).trim();
+  const match = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(hex);
+  if (!match) return null;
+
+  const full =
+    match[1].length === 3
+      ? match[1]
+          .split("")
+          .map((char) => char + char)
+          .join("")
+      : match[1];
+
+  return [0, 2, 4].map((index) => parseInt(full.slice(index, index + 2), 16));
+};
+
+/**
+ * One hue, decreasing weight: series stay on-theme and still tell apart.
+ */
+export const getThemeRamp = (count = 4) => {
+  const rgb = toRgb(getThemeColor());
+  const steps = [1, 0.72, 0.5, 0.34, 0.22, 0.14];
+
+  return Array.from({ length: Math.max(count, 1) }, (_, index) => {
+    const alpha = steps[index] ?? steps[steps.length - 1];
+    return rgb
+      ? `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`
+      : getThemeColor();
+  });
 };

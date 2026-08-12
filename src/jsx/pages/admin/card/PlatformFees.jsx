@@ -64,14 +64,14 @@ const PlatformFees = () => {
   }, []);
 
   const feeFields = [
-    { key: "transfer", label: "Transfer Fee" },
-    { key: "deposit", label: "Deposit Fee" },
-    { key: "withdrawal", label: "Withdrawal Fee" },
-    { key: "card_topup", label: "Card Topup Fee" },
+    { key: "transfer", label: "Transfer", icon: "pi-send" },
+    { key: "deposit", label: "Deposit", icon: "pi-download" },
+    { key: "withdrawal", label: "Withdrawal", icon: "pi-upload" },
+    { key: "card_topup", label: "Card Topup", icon: "pi-credit-card" },
   ];
 
   return (
-    <div className="card nova-panel">
+    <div className="card nova-panel nova-fees-panel">
       <div className="card-body">
         <div className="nova-section-head is-compact">
           <div>
@@ -93,61 +93,79 @@ const PlatformFees = () => {
             >
               {({ isSubmitting }) => (
                 <Form>
-                  {feeFields.map(({ key, label }) => (
-                    <div className="mb-3 row g-2" key={key}>
-                      <div className="col-md-6">
-                        <label className="form-label">{label} Type</label>
+                  <div className="row g-3">
+                    {feeFields.map(({ key, label, icon }) => (
+                      <div className="col-xl-3 col-md-6" key={key}>
+                        <div className="nova-fee-tile">
+                          <span className="nova-fee-tile-head">
+                            <i className={`pi ${icon}`} />
+                            {label} Fee
+                          </span>
 
-                        <Field
-                          as="select"
-                          name={`${key}.value_type`}
-                          className="form-select"
-                        >
-                          <option value="fixed">Fixed</option>
-                          <option value="percent">Percent</option>
-                        </Field>
+                          <div className="row g-2">
+                            <div className="col-6">
+                              <label className="form-label nova-form-label">
+                                Type
+                              </label>
 
-                        <ErrorMessage
-                          name={`${key}.value_type`}
-                          component="small"
-                          className="text-danger"
-                        />
+                              <Field
+                                as="select"
+                                name={`${key}.value_type`}
+                                className="form-select"
+                              >
+                                <option value="fixed">Fixed</option>
+                                <option value="percent">Percent</option>
+                              </Field>
+
+                              <ErrorMessage
+                                name={`${key}.value_type`}
+                                component="small"
+                                className="text-danger d-block mt-1"
+                              />
+                            </div>
+
+                            <div className="col-6">
+                              <label className="form-label nova-form-label">
+                                Value
+                              </label>
+
+                              <Field
+                                type="number"
+                                step="0.01"
+                                name={`${key}.value`}
+                                className="form-control"
+                              />
+
+                              <ErrorMessage
+                                name={`${key}.value`}
+                                component="small"
+                                className="text-danger d-block mt-1"
+                              />
+                            </div>
+                          </div>
+                        </div>
                       </div>
+                    ))}
+                  </div>
 
-                      <div className="col-md-6">
-                        <label className="form-label">{label} Value</label>
-
-                        <Field
-                          type="number"
-                          step="0.01"
-                          name={`${key}.value`}
-                          className="form-control"
-                        />
-
-                        <ErrorMessage
-                          name={`${key}.value`}
-                          component="small"
-                          className="text-danger"
-                        />
-                      </div>
+                  <div className="nova-form-actions">
+                    <div className="nova-form-actions-status">
+                      {feesSaved && (
+                        <span className="text-success">
+                          <i className="pi pi-check-circle me-1" />
+                          Platform fees saved successfully.
+                        </span>
+                      )}
                     </div>
 
-
-                  ))}
-                  <div className="d-flex justify-content-end mt-3">
                     <Button
-                    type="submit"
-                    className="btn btn-primary btn-sm"
+                      type="submit"
+                      className="btn btn-primary btn-sm"
                       label={isSubmitting ? "Saving..." : "Save Platform Fees"}
                       icon="pi pi-check"
                       disabled={isSubmitting}
                     />
                   </div>
-                  {feesSaved && (
-                    <p className="text-success mt-3 mb-0">
-                      Platform fees saved successfully.
-                    </p>
-                  )}
                 </Form>
               )}
             </Formik>

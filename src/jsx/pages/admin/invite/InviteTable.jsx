@@ -291,7 +291,14 @@ const InviteTable = ({ setLoadingInviteList, setInviteList }) => {
     const rewards = record?.rewards_by_level || {};
     const levels = Object.keys(rewards);
 
-    if (!levels.length) return <div className="text-muted">No rewards data.</div>;
+    if (!levels.length) {
+      return (
+        <div className="nova-invite-empty-state compact">
+          <i className="pi pi-gift" />
+          <p>No rewards recorded for this user yet.</p>
+        </div>
+      );
+    }
 
     return (
       <div className="nova-invite-tier-grid">
@@ -323,7 +330,14 @@ const InviteTable = ({ setLoadingInviteList, setInviteList }) => {
 
   const renderRewardsTable = (record) => {
     const rows = Array.isArray(record?.rewards_table) ? record.rewards_table : [];
-    if (!rows.length) return <div className="text-muted">No rewards table.</div>;
+    if (!rows.length) {
+      return (
+        <div className="nova-invite-empty-state compact">
+          <i className="pi pi-table" />
+          <p>No payout rows to show.</p>
+        </div>
+      );
+    }
 
     return (
       <div className="table-responsive nova-invite-rewards-table-wrap">
@@ -340,7 +354,13 @@ const InviteTable = ({ setLoadingInviteList, setInviteList }) => {
               <tr key={`${r.level}-${r.card_type}-${idx}`}>
                 <td className="fw-semibold">{getDisplayValue(r.level)}</td>
                 <td>
-                  <span className="badge bg-light text-dark border">
+                  <span
+                    className={`nova-card-type-badge ${
+                      String(r.card_type).toUpperCase() === "PHYSICAL"
+                        ? "is-physical"
+                        : "is-virtual"
+                    }`}
+                  >
                     {getDisplayValue(r.card_type)}
                   </span>
                 </td>
@@ -355,22 +375,26 @@ const InviteTable = ({ setLoadingInviteList, setInviteList }) => {
     );
   };
 
+  // A failed detail fetch sets the record to null, so read through a safe copy
+  // instead of dereferencing it while the modal is still mounted.
+  const detail = detailRecord || {};
+
   const detailFields = [
-    { label: "User ID", value: getDisplayValue(detailRecord.user_id) },
-    { label: "Email", value: getDisplayValue(detailRecord.email) },
-    { label: "Invite Code", value: getDisplayValue(detailRecord.invitation_code) },
-    { label: "Referral Level", value: getDisplayValue(detailRecord.referral_level) },
+    { label: "User ID", value: getDisplayValue(detail.user_id) },
+    { label: "Email", value: getDisplayValue(detail.email) },
+    { label: "Invite Code", value: getDisplayValue(detail.invitation_code) },
+    { label: "Referral Level", value: getDisplayValue(detail.referral_level) },
     {
       label: "Referred Joined",
-      value: Number(detailRecord.total_referred_joined ?? 0).toLocaleString(),
+      value: Number(detail.total_referred_joined ?? 0).toLocaleString(),
     },
     {
       label: "Referral Purchases",
-      value: Number(detailRecord.total_purchases_from_referrals ?? 0).toLocaleString(),
+      value: Number(detail.total_purchases_from_referrals ?? 0).toLocaleString(),
     },
     {
       label: "Total Earnings (USD)",
-      value: `$${Number(detailRecord.total_earnings_usd ?? 0).toLocaleString()}`,
+      value: `$${Number(detail.total_earnings_usd ?? 0).toLocaleString()}`,
     },
   ];
 

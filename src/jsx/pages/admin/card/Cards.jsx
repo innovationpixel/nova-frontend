@@ -62,10 +62,12 @@ const statCards = [
 
 const Cards = () => {
   const [cardProducts, setCardProducts] = useState([]);
+  const [cardProductsLoading, setCardProductsLoading] = useState(true);
   const [cardTableLoading, setCardTableLoading] = useState(true);
   const [cardSummaryData, setCardSummaryData] = useState({});
 
   const getCardProducts = async () => {
+    setCardProductsLoading(true);
     try {
       const res = await request({
         url: "card-products",
@@ -75,6 +77,8 @@ const Cards = () => {
     } catch (error) {
       console.error(error);
       setCardProducts([]);
+    } finally {
+      setCardProductsLoading(false);
     }
   };
 
@@ -104,19 +108,9 @@ const Cards = () => {
           </p>
         </div>
 
+        {/* Total/Active counts live in the stat grid below, so the hero only
+            carries the one metric that is not repeated there. */}
         <div className="nova-page-hero-metrics">
-          <div className="nova-page-hero-metric">
-            <span>Total Cards</span>
-            <strong>
-              {cardTableLoading ? "..." : Number(totalCount).toLocaleString()}
-            </strong>
-          </div>
-          <div className="nova-page-hero-metric">
-            <span>Active Cards</span>
-            <strong>
-              {cardTableLoading ? "..." : Number(activeCount).toLocaleString()}
-            </strong>
-          </div>
           <div className="nova-page-hero-metric is-highlight">
             <span>Active Rate</span>
             <strong>{cardTableLoading ? "..." : `${activeRate}%`}</strong>
@@ -124,30 +118,27 @@ const Cards = () => {
         </div>
       </div>
 
-      <div className="row g-2 mb-3">
+      <div className="nova-stat-grid mb-3">
         {statCards.map((card) => (
-          <div className="col-xl-3 col-lg-4 col-md-6" key={card.key}>
-            <InsightStatCard
-              title={card.title}
-              value={cardTableLoading ? "..." : (cardSummaryData[card.key] ?? 0)}
-              icon={card.icon}
-              tone={card.tone}
-              hint={card.hint}
-            />
-          </div>
+          <InsightStatCard
+            key={card.key}
+            title={card.title}
+            value={cardTableLoading ? "..." : (cardSummaryData[card.key] ?? 0)}
+            icon={card.icon}
+            tone={card.tone}
+            hint={card.hint}
+          />
         ))}
       </div>
 
-      <CardOfferingsPanel />
+      <CardOfferingsPanel
+        products={cardProducts}
+        loading={cardProductsLoading}
+      />
 
-      <div className="row g-2 mb-3 nova-page-insights-row">
-        <div className="col-xl-6">
-          <SetCardFees cardProducts={cardProducts} />
-        </div>
-        <div className="col-xl-6">
-          <PlatformFees />
-        </div>
-      </div>
+      <SetCardFees cardProducts={cardProducts} onSaved={getCardProducts} />
+
+      <PlatformFees />
 
       <CardTable
         setCardSummaryData={setCardSummaryData}

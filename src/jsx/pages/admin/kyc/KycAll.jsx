@@ -46,8 +46,13 @@ const KycAll = () => {
   const [loading, setKYCSummaryLoading] = useState(true);
 
   const approvalRate = useMemo(() => {
-    const total = Number(kycSummary.total ?? 0);
     const approved = Number(kycSummary.approved ?? 0);
+    const pending = Number(kycSummary.pending ?? 0);
+    const rejected = Number(kycSummary.rejected ?? 0);
+    // Fall back to the outcome sum when the API omits a total.
+    const total =
+      Number(kycSummary.total ?? 0) || approved + pending + rejected;
+
     return total ? Math.round((approved / total) * 100) : 0;
   }, [kycSummary]);
 
@@ -75,21 +80,9 @@ const KycAll = () => {
           </p>
         </div>
 
+        {/* Submitted/Pending counts live in the stat grid below, so the hero
+            only carries the metric that is not repeated there. */}
         <div className="nova-page-hero-metrics">
-          <div className="nova-page-hero-metric">
-            <span>Submitted</span>
-            <strong>
-              {loading ? "..." : Number(kycSummary.total ?? 0).toLocaleString()}
-            </strong>
-          </div>
-          <div className="nova-page-hero-metric">
-            <span>Pending</span>
-            <strong>
-              {loading
-                ? "..."
-                : Number(kycSummary.pending ?? 0).toLocaleString()}
-            </strong>
-          </div>
           <div className="nova-page-hero-metric is-highlight">
             <span>Approval Rate</span>
             <strong>{loading ? "..." : `${approvalRate}%`}</strong>
@@ -97,27 +90,29 @@ const KycAll = () => {
         </div>
       </div>
 
-      <div className="row g-2 mb-3">
-        {statCards.map((item) => (
-          <div className="col-xl-3 col-md-6" key={item.key}>
-            <InsightStatCard
-              title={item.title}
-              value={loading ? "..." : (kycSummary[item.key] ?? 0)}
-              icon={item.icon}
-              tone={item.tone}
-              hint={item.hint}
-            />
+      <div className="row g-3 mb-3">
+        <div className="col-xl-6">
+          <div className="nova-kyc-stat-grid">
+            {statCards.map((item) => (
+              <InsightStatCard
+                key={item.key}
+                title={item.title}
+                value={loading ? "..." : (kycSummary[item.key] ?? 0)}
+                icon={item.icon}
+                tone={item.tone}
+                hint={item.hint}
+              />
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
 
-      <div className="row g-2 mb-3 nova-page-insights-row">
-        <div className="col-xl-6 col-lg-8">
+        <div className="col-xl-6">
           <KycOverviewCard
+            className="nova-kyc-overview h-100"
             kycSummary={overviewSummary}
             loading={loading}
             showUpdatedAt={false}
-            subtitle="Current distribution of KYC statuses."
+            subtitle="Share of submissions by review outcome."
           />
         </div>
       </div>

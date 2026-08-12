@@ -11,10 +11,14 @@ import {
   formatMoney,
   getDisplayValue,
   getEmail,
+  normalizeCardType,
   normalizeStatusLabel,
+  resolveImageSrc,
 } from "../../../../utils";
 import TableFilters from "../../../components/utilComponents/TableFilters";
 import Loading from "../../../components/utilComponents/Loading";
+import { buildRecordDetails, dedupeGroups } from "../components/recordDetails";
+import { cardInventory } from "../../../data/adminData";
 
 const getInitials = (value) => {
   const text = String(value || "").trim();
@@ -23,6 +27,27 @@ const getInitials = (value) => {
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
   return `${parts[0][0] || ""}${parts[1][0] || ""}`.toUpperCase();
 };
+
+// Rendered in the hero, the stat tiles or the curated groups, so the automatic
+// "everything else" pass does not repeat them.
+const SUMMARY_KEYS = [
+  "id",
+  "card_id",
+  "card_number",
+  "card_type",
+  "status",
+  "balance",
+  "currency",
+  "is_bound",
+  "bound_at",
+  "frozen_at",
+  "created_at",
+  "updated_at",
+];
+
+const FALLBACK_ARTWORK = new Map(
+  cardInventory.map((card) => [card.type, card.image]),
+);
 
 const CardTable = ({ setCardTableLoading, setCardSummaryData }) => {
   const dt = useRef(null);
@@ -40,6 +65,7 @@ const CardTable = ({ setCardTableLoading, setCardSummaryData }) => {
     status: "",
     order: "desc",
   });
+  const [cardArtwork, setCardArtwork] = useState({});
 
   const filterConfig = {
     showSearch: true,
@@ -91,6 +117,38 @@ const CardTable = ({ setCardTableLoading, setCardSummaryData }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
+  // Card artwork lives on the products endpoint, keyed by card type.
+  useEffect(() => {
+    let cancelled = false;
+
+    const getCardArtwork = async () => {
+      try {
+        const res = await request({ url: "card-products", method: "GET" });
+        const artwork = {};
+
+        (res?.data?.data ?? []).forEach((product) => {
+          const type = normalizeCardType(product.card_type);
+          const src = resolveImageSrc(product.image_url);
+          if (type && src && !artwork[type]) artwork[type] = src;
+        });
+
+        if (!cancelled) setCardArtwork(artwork);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getCardArtwork();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const artworkFor = (cardType) => {
+    const type = normalizeCardType(cardType);
+    return cardArtwork[type] || FALLBACK_ARTWORK.get(type) || "";
+  };
+
   const cardTemplate = (rowData) => (
     <div>
       <span className="nova-card-id-chip">
@@ -104,8 +162,16 @@ const CardTable = ({ setCardTableLoading, setCardSummaryData }) => {
     </div>
   );
 
+  // Signup email of the linked account. The column is only rendered when the
+  // API actually returns it for at least one card.
+  const hasCardholderData = cardData.some((row) => getEmail(row) !== "N/A");
+
   const holderTemplate = (rowData) => {
     const email = getEmail(rowData);
+    if (email === "N/A") {
+      return <span className="text-muted">Not linked</span>;
+    }
+
     return (
       <div className="nova-table-user-cell">
         <div className="nova-table-avatar">{getInitials(email)}</div>
@@ -197,56 +263,65 @@ const CardTable = ({ setCardTableLoading, setCardSummaryData }) => {
     </div>
   );
 
-  const detailFields = detailRecord
+  const detailEmailValue = detailRecord ? getEmail(detailRecord) : "N/A";
+  const detailEmail = detailEmailValue === "N/A" ? "" : detailEmailValue;
+
+  // Card ID, type, status, balance, binding, currency and the email are already
+  // rendered in the hero and the stat tiles, so they are not repeated as rows.
+  const alreadyShownPairs = detailRecord
     ? [
-        { label: "Record ID", value: getDisplayValue(detailRecord.id) },
-        { label: "Card ID", value: getDisplayValue(detailRecord.card_id) },
-        {
-          label: "Card Number",
-          value: getDisplayValue(detailRecord.card_number),
-        },
-        {
-          label: "Card Type",
-          value: normalizeStatusLabel(detailRecord.card_type),
-        },
-        {
-          label: "Status",
-          value: normalizeStatusLabel(detailRecord.status),
-        },
-        {
-          label: "Balance",
-          value: formatMoney(detailRecord.balance, detailRecord.currency),
-        },
-        { label: "Currency", value: getDisplayValue(detailRecord.currency) },
-        { label: "Bound", value: detailRecord.is_bound ? "Yes" : "No" },
-        {
-          label: "Bound At",
-          value: formatDateTime(detailRecord.bound_at),
-        },
-        ...(detailRecord.frozen_at
-          ? [
-              {
-                label: "Frozen At",
-                value: formatDateTime(detailRecord.frozen_at),
-              },
-            ]
-          : []),
-        { label: "Email", value: getEmail(detailRecord) },
-        {
-          label: "User Active",
-          value:
-            detailRecord?.tevau_user?.user?.is_active === undefined
-              ? "N/A"
-              : detailRecord.tevau_user.user.is_active
-                ? "Yes"
-                : "No",
-        },
-        {
-          label: "Registered",
-          value: formatDateTime(detailRecord.created_at),
-        },
+        `Email|${detailEmailValue}`,
+        `Card ID|${getDisplayValue(detailRecord.card_id)}`,
+        `Status|${normalizeStatusLabel(detailRecord.status)}`,
+        `Card Type|${normalizeStatusLabel(detailRecord.card_type)}`,
+        `Balance|${formatMoney(detailRecord.balance, detailRecord.currency)}`,
+        `Currency|${getDisplayValue(detailRecord.currency)}`,
       ]
     : [];
+
+  const autoDetails = buildRecordDetails(detailRecord, {
+    skipKeys: SUMMARY_KEYS,
+    rootTitle: "Other Card Fields",
+  });
+
+  const rawDetailGroups = detailRecord
+    ? [
+        {
+          title: "Card Information",
+          fields: [
+            { label: "Record ID", value: getDisplayValue(detailRecord.id) },
+            {
+              label: "Card Number",
+              value: getDisplayValue(detailRecord.card_number),
+            },
+          ],
+        },
+        {
+          title: "Timeline",
+          fields: [
+            { label: "Bound At", value: formatDateTime(detailRecord.bound_at) },
+            {
+              label: "Frozen At",
+              value: formatDateTime(detailRecord.frozen_at),
+            },
+            {
+              label: "Registered",
+              value: formatDateTime(detailRecord.created_at),
+            },
+            {
+              label: "Last Updated",
+              value: formatDateTime(detailRecord.updated_at),
+            },
+          ],
+        },
+        // Anything else the endpoint returns, including nested relations.
+        ...autoDetails.groups,
+      ]
+    : [];
+
+  // Only surface what the API actually sends, once: empty values are dropped,
+  // and a label/value pair is never printed twice across the whole modal.
+  const detailGroups = dedupeGroups(rawDetailGroups, alreadyShownPairs);
 
   return (
     <>
@@ -270,7 +345,9 @@ const CardTable = ({ setCardTableLoading, setCardSummaryData }) => {
             }}
           >
             <Column header="Card" body={cardTemplate} sortable />
-            <Column header="Cardholder" body={holderTemplate} sortable />
+            {hasCardholderData ? (
+              <Column header="Cardholder" body={holderTemplate} sortable />
+            ) : null}
             <Column field="card_type" header="Type" body={typeTemplate} sortable />
             <Column field="status" header="Status" body={statusTemplate} sortable />
             <Column field="balance" header="Balance" body={balanceTemplate} sortable />
@@ -284,7 +361,8 @@ const CardTable = ({ setCardTableLoading, setCardSummaryData }) => {
         show={detailOpen}
         onHide={() => setDetailOpen(false)}
         centered
-        size="lg"
+        scrollable
+        size="xl"
         className="nova-cards-modal"
       >
         <div className="modal-content">
@@ -306,15 +384,34 @@ const CardTable = ({ setCardTableLoading, setCardSummaryData }) => {
             {detailRecord && (
               <>
                 <div className="nova-table-detail-hero">
-                  <div className="nova-table-avatar is-large">
-                    {getInitials(getEmail(detailRecord))}
-                  </div>
+                  {artworkFor(detailRecord.card_type) ? (
+                    <div className="nova-detail-hero-art">
+                      <img
+                        src={artworkFor(detailRecord.card_type)}
+                        alt={`${normalizeStatusLabel(
+                          detailRecord.card_type,
+                        )} card`}
+                      />
+                    </div>
+                  ) : (
+                    <div className="nova-table-avatar is-large">
+                      {detailEmail ? (
+                        getInitials(detailEmail)
+                      ) : (
+                        <i className="pi pi-credit-card" />
+                      )}
+                    </div>
+                  )}
                   <div>
-                    <h5 className="mb-1">{getEmail(detailRecord)}</h5>
+                    <h5 className="mb-1">
+                      {detailEmail || getDisplayValue(detailRecord.card_id)}
+                    </h5>
                     <p className="text-muted mb-2">
-                      {getDisplayValue(detailRecord.card_id)}
+                      {detailEmail
+                        ? getDisplayValue(detailRecord.card_id)
+                        : "Not linked to a user account"}
                     </p>
-                    <div className="d-flex flex-wrap gap-2">
+                    <div className="nova-profile-badges">
                       <Tag
                         value={normalizeStatusLabel(detailRecord.status)}
                         severity={getStatusSeverity(
@@ -363,14 +460,22 @@ const CardTable = ({ setCardTableLoading, setCardSummaryData }) => {
                   </div>
                 </div>
 
-                <div className="nova-profile-list">
-                  {detailFields.map((field) => (
-                    <div className="nova-profile-list-row" key={field.label}>
-                      <span>{field.label}</span>
-                      <strong>{field.value}</strong>
+                {detailGroups.map((group) => (
+                  <div className="nova-detail-group" key={group.title}>
+                    <h6 className="nova-detail-group-title">{group.title}</h6>
+                    <div className="nova-detail-grid">
+                      {group.fields.map((field) => (
+                        <div
+                          className="nova-profile-list-row"
+                          key={`${group.title}-${field.label}`}
+                        >
+                          <span>{field.label}</span>
+                          <strong>{field.value}</strong>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </>
             )}
           </div>
